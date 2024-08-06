@@ -26,7 +26,7 @@ public class NoteController {
         return noteService.getAllNotes();
     }
 
-    @GetMapping("/{patientId}")
+    @GetMapping("/patient/{patientId}")
     public List<Note> getNotesByPatientId(@PathVariable("patientId") Long patientId) {
         return noteService.getNotesByPatientId(patientId);
     }
