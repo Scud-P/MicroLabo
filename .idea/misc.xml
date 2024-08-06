@@ -7,6 +7,7 @@
         <option value="$PROJECT_DIR$/gateway/pom.xml" />
         <option value="$PROJECT_DIR$/microlabo/pom.xml" />
         <option value="$PROJECT_DIR$/microfront/pom.xml" />
+        <option value="$PROJECT_DIR$/micronotes/pom.xml" />
       </list>
     </option>
   </component>

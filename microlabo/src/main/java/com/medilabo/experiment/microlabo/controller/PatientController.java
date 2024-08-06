@@ -3,7 +3,6 @@ package com.medilabo.experiment.microlabo.controller;
 import com.medilabo.experiment.microlabo.domain.Patient;
 import com.medilabo.experiment.microlabo.exception.PatientNotFoundException;
 import com.medilabo.experiment.microlabo.service.PatientService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
