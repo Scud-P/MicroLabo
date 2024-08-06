@@ -16,17 +16,110 @@ public class NoteController {
     private WebClient.Builder webClientBuilder;
 
     @GetMapping("/notes/patient/{patientId}")
-    public String getNotes(@PathVariable("patientId") Long patientId, Model model) {
+    public String getNotes(@PathVariable("patientId") Long patientId,
+                           Model model) {
+        return updateModelWithPatientNotes(patientId, model);
+    }
 
-        WebClient webClient = webClientBuilder.build();
+    @GetMapping("/notes/update/{id}")
+    public String showUpdateNote(@PathVariable("id") String id,
+                                 Model model) {
 
-        List<NoteBean> notes = webClient.get()
-                .uri("http://localhost:8083/notes/{patientId}", patientId)
+        NoteBean note = webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8083/notes/{id}", id)
+                .retrieve()
+                .bodyToMono(NoteBean.class)
+                .block();
+
+        model.addAttribute("note", note);
+        return "notes/update";
+    }
+
+    @PutMapping("/notes/{id}")
+    public String updateNote(@PathVariable("id") String id,
+                             @ModelAttribute NoteBean note,
+                             Model model) {
+
+        NoteBean updatedNote = webClientBuilder.build()
+                .put()
+                .uri("http://localhost:8083/notes/{id}", id)
+                .bodyValue(note)
+                .retrieve()
+                .bodyToMono(NoteBean.class)
+                .block();
+
+        Long patientId = note.getPatientId();
+        return updateModelWithPatientNotes(patientId, model);
+    }
+
+    @GetMapping("/notes/add")
+    public String showAddNote(
+            @RequestParam("patientId") Long patientId,
+            @RequestParam("patientLastName") String patientLastName,
+            Model model) {
+
+        NoteBean note = new NoteBean();
+        note.setPatientId(patientId);
+        note.setPatientLastName(patientLastName);
+        model.addAttribute("note", note);
+        return "notes/add";
+    }
+
+    @PostMapping("/notes/validate")
+    public String validateNote(@ModelAttribute NoteBean note, Model model) {
+        webClientBuilder.build()
+                .post()
+                .uri("http://localhost:8083/notes/validate")
+                .bodyValue(note)
+                .retrieve()
+                .bodyToMono(NoteBean.class)
+                .block();
+
+        Long patientId = note.getPatientId();
+
+        return updateModelWithPatientNotes(patientId, model);
+    }
+
+    @DeleteMapping("/notes/{id}")
+    public String deleteNote(@PathVariable("id") String id,
+                             Model model) {
+
+        Long patientId = fetchPatientIdForNoteId(id);
+
+        webClientBuilder.build()
+                .delete()
+                .uri("http://localhost:8083/notes/{id}", id)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+
+        return updateModelWithPatientNotes(patientId, model);
+    }
+
+    private Long fetchPatientIdForNoteId(String id) {
+        NoteBean note = webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8083/notes/{id}", id)
+                .retrieve()
+                .bodyToMono(NoteBean.class)
+                .block();
+
+        return note != null ? note.getPatientId() : null;
+    }
+
+    private List<NoteBean> fetchNotesByPatientId(Long patientId) {
+        return webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8083/notes/patient/{patientId}", patientId)
                 .retrieve()
                 .bodyToFlux(NoteBean.class)
                 .collectList()
                 .block();
+    }
 
+    private String updateModelWithPatientNotes(Long patientId, Model model) {
+        List<NoteBean> notes = fetchNotesByPatientId(patientId);
         model.addAttribute("notes", notes);
         return "notes/list";
     }

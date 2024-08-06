@@ -61,7 +61,7 @@ public class NoteController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}]")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<Note> updateNote(@PathVariable("id") String id, @RequestBody Note note) {
         if(!id.equals(note.getId())) {
             return ResponseEntity.badRequest().build();
