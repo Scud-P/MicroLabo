@@ -77,10 +77,9 @@ public class NoteController {
         return note;
     }
 
-//    @GetMapping("/patient/risk/{patientId}")
-//    public ResponseEntity<Long> getRiskByPatientId(@PathVariable long patientId) {
-//        List<String> contents =  noteService.getContentsByPatientId(patientId);
-//        long risk = noteService.countTotalRiskWordOccurrences(contents);
-//        return ResponseEntity.ok(risk);
-//    }
+    @GetMapping("/patient/contents/{patientId}")
+    public ResponseEntity<List<String>> getContentsForPatient(@PathVariable("patientId") long patientId) {
+        List<String> contents =  noteService.getContentsByPatientId(patientId);
+        return ResponseEntity.ok(contents);
+    }
 }

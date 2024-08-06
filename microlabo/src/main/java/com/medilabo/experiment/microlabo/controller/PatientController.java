@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -51,9 +52,21 @@ public class PatientController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable("id") Long id) {
         Patient patient = patientService.getPatientById(id);
-        if(patient == null) throw new PatientNotFoundException("Patient with id " + id + " not found.");
+        if (patient == null) throw new PatientNotFoundException("Patient with id " + id + " not found.");
         patientService.deletePatientById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/{id}/birthdate")
+    public ResponseEntity<LocalDate> getBirthdate(@PathVariable("id") Long id) {
+        LocalDate birthdate = patientService.getBirthdateById(id);
+        return ResponseEntity.ok(birthdate);
+    }
+
+    @GetMapping(value = "/{id}/gender")
+    public ResponseEntity<String> getGender(@PathVariable("id") Long id) {
+        String gender = patientService.getGenderById(id);
+        return ResponseEntity.ok(gender);
     }
 
 }

@@ -57,14 +57,15 @@ public class PatientService {
         return Period.between(birthdate, LocalDate.now()).getYears();
     }
 
-    public String getGenderById(long id) {
-
-        String gender = getPatientById(id).getGender();
-        if (gender == null) {
-            throw new IllegalArgumentException("gender not found");
-        }
-        return gender;
+    public LocalDate getBirthdateById(Long id) {
+        return patientRepository.findBirthdateById(id);
     }
+
+    public String getGenderById(Long id) {
+        return patientRepository.findGenderById(id);
+    }
+
+
 
     /**
      * For testing purposes, we need to create Patients

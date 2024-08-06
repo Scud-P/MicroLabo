@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="microlabo" />
         <module name="micronotes" />
+        <module name="microrisk" />
         <module name="microfront" />
         <module name="gateway" />
       </profile>
@@ -20,6 +21,7 @@
       <module name="microfront" options="-parameters" />
       <module name="microlabo" options="-parameters" />
       <module name="micronotes" options="-parameters" />
+      <module name="microrisk" options="-parameters" />
     </option>
   </component>
 </project>

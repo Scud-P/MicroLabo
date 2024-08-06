@@ -123,4 +123,6 @@ public class NoteController {
         model.addAttribute("notes", notes);
         return "notes/list";
     }
+
+
 }
