@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Details</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container">
+    <h1>Patient Details</h1>
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <p id="firstName" class="form-control" th:text="${patient.firstName}">First Name</p>
+    </div>
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <p id="lastName" class="form-control" th:text="${patient.lastName}">Last Name</p>
+    </div>
+    <div class="mb-3">
+        <label for="birthdate" class="form-label">Birth Date</label>
+        <p id="birthdate" class="form-control" th:text="${formattedBirthdate}"> Birth Date</p>
+    </div>
+    <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <p id="gender" class="form-control" th:text="${patient.gender == 'M' ? 'Male' : 'Female'}">Gender</p>
+    </div>
+    <div class="mb-3">
+        <label for="address" class="form-label">Address</label>
+        <p id="address" class="form-control" th:text="${patient.address}">Address</p>
+    </div>
+    <div class="mb-3">
+        <label for="phoneNumber" class="form-label">Phone Number</label>
+        <p id="phoneNumber" class="form-control" th:text="${patient.phoneNumber}">Phone Number</p>
+    </div>
+    <a class="btn btn-primary" href="/">Back</a>
+    <a class="btn btn-primary" th:href="@{/patients/update/{id}(id=${patient.id})}">Edit</a>
+</div>
+<script type="text/javascript" src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

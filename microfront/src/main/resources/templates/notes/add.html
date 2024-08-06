@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Note</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+        <h2>Add a new note</h2>
+        <div class="text-right">
+            <div class="border p-2">
+                <p th:text="'Patient ID: ' + ${note.patientId}"></p>
+                <p th:text="'Patient Last Name: ' + ${note.patientLastName}"></p>
+            </div>
+        </div>
+    </div>
+    <form th:action="@{/notes/validate}" method="post" th:object="${note}">
+        <input type="hidden" th:field="*{patientId}" />
+        <input type="hidden" th:field="*{patientLastName}" />
+        <div class="form-group">
+            <label for="content">Content:</label>
+            <textarea id="content" class="form-control" th:field="*{content}"></textarea>
+        </div>
+        <div class="d-flex mt-3">
+            <button type="submit" class="btn btn-primary me-2">Save Note</button>
+            <a th:href="@{/notes/list(patientId=${note.patientId}, patientLastName=${note.patientLastName})}" class="btn btn-danger">Cancel</a>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+</body>
+</html>

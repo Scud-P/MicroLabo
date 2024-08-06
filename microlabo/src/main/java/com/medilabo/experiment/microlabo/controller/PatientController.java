@@ -1,0 +1,60 @@
+package com.medilabo.experiment.microlabo.controller;
+
+import com.medilabo.experiment.microlabo.domain.Patient;
+import com.medilabo.experiment.microlabo.exception.PatientNotFoundException;
+import com.medilabo.experiment.microlabo.service.PatientService;
+import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/patients")
+public class PatientController {
+
+    @Autowired
+    private PatientService patientService;
+
+    @GetMapping("")
+    public List<Patient> patients() {
+        return patientService.getAllPatients();
+    }
+
+    @GetMapping("/{id}")
+    public Patient getPatientById(@PathVariable("id") Long id) {
+        return patientService.getPatientById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Patient> updatePatient(@PathVariable("id") Long id, @RequestBody Patient patient) {
+        if (!id.equals(patient.getId())) {
+            return ResponseEntity.badRequest().build();
+        }
+        Patient updatedPatient = patientService.updatePatient(patient);
+        return ResponseEntity.ok(updatedPatient);
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<Patient> validatePatient(@RequestBody Patient patient) {
+        Patient addedPatient = patientService.addPatient(patient);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(addedPatient.getId())
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deletePatient(@PathVariable("id") Long id) {
+        Patient patient = patientService.getPatientById(id);
+        if(patient == null) throw new PatientNotFoundException("Patient with id " + id + " not found.");
+        patientService.deletePatientById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

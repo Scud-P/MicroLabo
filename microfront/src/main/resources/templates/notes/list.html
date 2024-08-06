@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MicroNotes</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container">
+    <h1 class="title mt-3">MicroNotes Application</h1>
+    <div class="row">
+        <div class="col">
+            <table class="table table-bordered table-striped mt-2">
+                <thead>
+                <tr>
+                    <th>Patient Id</th>
+                    <th>Patient</th>
+                    <th>Note</th>
+                    <th class="col-2">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="note : ${notes}">
+                    <td th:text="${note.patientId}"></td>
+                    <td th:text="${note.patientLastName}"></td>
+                    <td th:text="${note.content}"></td>
+                    <td>
+                        <a th:href="@{/notes/update/{id}(id=${note.id})}" class="btn btn-primary">Edit</a>
+                        <form th:action="@{/notes/{id}(id=${note.id})}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this note?');">
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h2>Add a new note</h2>
+    <a th:if="${#lists.isEmpty(notes)}" th:href="@{/notes/add(patientId=${param.patientId}, patientLastName=${param.patientLastName})}" class="btn btn-primary">Add new Note</a>
+    <a th:if="${!#lists.isEmpty(notes)}" th:href="@{/notes/add(patientId=${notes[0].patientId}, patientLastName=${notes[0].patientLastName})}" class="btn btn-primary">Add new Note</a>
+</div>
+<script type="text/javascript" src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
+</body>
+</html>
