@@ -34,8 +34,16 @@ public class PatientController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = patient.getBirthdate().format(formatter);
 
+        String risk = webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8084/risk/{patientId}", id)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
         model.addAttribute("patient", patient);
         model.addAttribute("formattedBirthdate", formattedDate);
+        model.addAttribute("risk", risk);
         return "patient";
     }
 
@@ -105,8 +113,8 @@ public class PatientController {
                     .toBodilessEntity()
                     .block();
         } catch (WebClientException e) {
-        model.addAttribute("error", "Failed to delete patient: " + e.getMessage());
-        return "error";
+            model.addAttribute("error", "Failed to delete patient: " + e.getMessage());
+            return "error";
         }
         return updateModelWithPatients(model);
     }
@@ -126,4 +134,5 @@ public class PatientController {
         model.addAttribute("patients", patients);
         return "home";
     }
+
 }

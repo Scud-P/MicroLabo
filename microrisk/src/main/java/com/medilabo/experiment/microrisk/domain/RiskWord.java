@@ -1,4 +1,4 @@
-package com.medilabo.experiment.microrisk;
+package com.medilabo.experiment.microrisk.domain;
 
 import lombok.Getter;
 

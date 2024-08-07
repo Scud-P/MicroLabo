@@ -31,6 +31,10 @@
         <label for="phoneNumber" class="form-label">Phone Number</label>
         <p id="phoneNumber" class="form-control" th:text="${patient.phoneNumber}">Phone Number</p>
     </div>
+    <div class="mb-3">
+        <label for="risk" class="form-label">Risk</label>
+        <p id="risk" class="form-control" th:text="${risk}">Risk</p>
+    </div>
     <a class="btn btn-primary" href="/">Back</a>
     <a class="btn btn-primary" th:href="@{/patients/update/{id}(id=${patient.id})}">Edit</a>
 </div>

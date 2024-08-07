@@ -1,6 +1,6 @@
 package com.medilabo.experiment.microrisk.service;
 
-import com.medilabo.experiment.microrisk.RiskWord;
+import com.medilabo.experiment.microrisk.domain.RiskWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +44,7 @@ public class RiskService {
     public List<String> fetchContents(@PathVariable Long patientId) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8083/patients/contents/{patientId}", patientId)
+                .uri("http://localhost:8083/notes/patient/contents/{patientId}", patientId)
                 .retrieve()
                 .bodyToFlux(String.class)
                 .collectList()
@@ -65,7 +65,7 @@ public class RiskService {
                 .toList();
     }
 
-    public Integer getRiskWordOccurrences(Long patientId) {
+    public int getRiskWordOccurrences(Long patientId) {
         List<String> contents = fetchContents(patientId);
         List<String> riskWords = getRiskWords();
 
@@ -76,4 +76,46 @@ public class RiskService {
         return countedRiskWords.size();
     }
 
+    public String calculateRiskForPatient(Long patientId) {
+        int age = calculateAge(patientId);
+        String gender = fetchGender(patientId);
+        int riskWordOccurrences = getRiskWordOccurrences(patientId);
+
+        if (riskWordOccurrences == 0) {
+            return "None";
+        } else if (riskWordOccurrences >= 2 && riskWordOccurrences <= 5) {
+            if (age > 30) {
+                return "Borderline";
+            }
+        }
+        if (gender.equalsIgnoreCase("m")) {
+            if (age < 30) {
+                if (riskWordOccurrences >= 3 && riskWordOccurrences < 5) {
+                    return "In Danger";
+
+                } else if(riskWordOccurrences < 3) {
+                    return "None";
+                }
+                else return "Early onset";
+            }
+            if (riskWordOccurrences >= 6 && riskWordOccurrences < 8) {
+                return "In Danger";
+            } else return "Early onset";
+        }
+        if (gender.equalsIgnoreCase("f")) {
+            if (age < 30) {
+                if (riskWordOccurrences >= 4 && riskWordOccurrences < 7) {
+                    return "In Danger";
+
+                } else if(riskWordOccurrences < 4) {
+                    return "None";
+                }
+                else return "Early onset";
+            }
+            if (riskWordOccurrences == 7) {
+                return "In Danger";
+            } else return "Early onset";
+        }
+        return "None";
+    }
 }
