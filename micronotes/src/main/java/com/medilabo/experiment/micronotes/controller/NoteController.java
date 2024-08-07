@@ -33,12 +33,6 @@ public class NoteController {
 
     @PostMapping("/validate")
     public ResponseEntity<Note> createNote(@Valid @RequestBody Note note, BindingResult result) {
-        System.out.println("Received note data: " + note);
-
-        if(result.hasErrors()){
-            System.out.println("Validation errors: " + result.getAllErrors());
-        }
-
         Note addedNote = noteService.saveNote(note);
         if(Objects.isNull(addedNote)) {
             return ResponseEntity.noContent().build();
