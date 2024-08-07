@@ -40,6 +40,8 @@
     <h2>Add a new note</h2>
     <a th:if="${#lists.isEmpty(notes)}" th:href="@{/notes/add(patientId=${param.patientId}, patientLastName=${param.patientLastName})}" class="btn btn-primary">Add new Note</a>
     <a th:if="${!#lists.isEmpty(notes)}" th:href="@{/notes/add(patientId=${notes[0].patientId}, patientLastName=${notes[0].patientLastName})}" class="btn btn-primary">Add new Note</a>
+    <a class="btn btn-danger btn-sm" href="/">Back to Patient List</a>
+
 </div>
 <script type="text/javascript" src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
 </body>

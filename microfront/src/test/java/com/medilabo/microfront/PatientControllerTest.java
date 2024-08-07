@@ -74,7 +74,6 @@ public class PatientControllerTest {
 //                .andExpect(model().attributeExists("patient"));
 //    }
 //
-//    //TODO CHECK IF THE METHOD UPDATES THE PATIENT IN UI & DB
 //
 //    @Test
 //    public void putRequest_toUpdatePatient_shouldUpdateTheCorrectPatient() throws Exception {

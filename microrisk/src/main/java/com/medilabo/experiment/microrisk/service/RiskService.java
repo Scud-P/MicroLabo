@@ -1,5 +1,6 @@
 package com.medilabo.experiment.microrisk.service;
 
+import com.medilabo.experiment.microrisk.domain.ExclusionWord;
 import com.medilabo.experiment.microrisk.domain.RiskWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class RiskService {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+    // Get the patient's birthdate and gender from Microlabo
     @GetMapping("/fetchBirthdate/{id}")
     public LocalDate fetchBirthDate(@PathVariable Long id) {
         return webClientBuilder.build()
@@ -40,6 +42,7 @@ public class RiskService {
                 .block();
     }
 
+    // Get the content field of every note concerning a specific patient from Micronotes
     @GetMapping("/fetchContents/{patientId}")
     public List<String> fetchContents(@PathVariable Long patientId) {
         return webClientBuilder.build()
@@ -59,23 +62,55 @@ public class RiskService {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
+    // Get the content of our risk words enum, flexible approach to add or delete words in the future
     public List<String> getRiskWords() {
         return Stream.of(RiskWord.values())
                 .map(RiskWord::getRiskWord)
                 .toList();
     }
 
+    // Same approach for words that exclude a risk word if they precede or follow it
+    public List<String> getExclusionWords() {
+        return Stream.of(ExclusionWord.values())
+                .map(ExclusionWord::getExclusionWord)
+                .toList();
+    }
+
+    // Calculate the number of valid risk word occurrences for a patient
     public int getRiskWordOccurrences(Long patientId) {
         List<String> contents = fetchContents(patientId);
         List<String> riskWords = getRiskWords();
+        List<String> exclusionWords = getExclusionWords();
 
         Set<String> countedRiskWords = contents.stream()
                 .flatMap(content -> riskWords.stream()
-                        .filter(riskWord -> content.toLowerCase().contains(riskWord.toLowerCase())))
+                        .filter(riskWord -> isToBeCountedRiskWord(content, riskWord, exclusionWords)))
                 .collect(Collectors.toSet());
+
         return countedRiskWords.size();
     }
 
+    // Returns true if the risk word is to be counted
+    private boolean isToBeCountedRiskWord(String content, String riskWord, List<String> exclusionWords) {
+        String lowerContent = content.toLowerCase();
+        String lowerRiskWord = riskWord.toLowerCase();
+
+        return lowerContent.contains(lowerRiskWord) && !isToBeExcludedRiskWord(lowerContent, lowerRiskWord, exclusionWords);
+    }
+
+    // Returns true if a word is to be excluded from the count
+    private boolean isToBeExcludedRiskWord(String content, String riskWord, List<String> exclusionWords) {
+        String lowerContent = content.toLowerCase();
+        String lowerRiskWord = riskWord.toLowerCase();
+
+        return exclusionWords.stream()
+                .map(String::toLowerCase)
+                .anyMatch(lowerExclusionWord ->
+                        lowerContent.contains(lowerExclusionWord + " " + lowerRiskWord) ||
+                                lowerContent.contains(lowerRiskWord + " " + lowerExclusionWord));
+    }
+
+     // Algorithm to define the risk for patients based on their age, gender and their doctor's notes
     public String calculateRiskForPatient(Long patientId) {
         int age = calculateAge(patientId);
         String gender = fetchGender(patientId);
