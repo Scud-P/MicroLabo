@@ -1,6 +1,7 @@
 package com.medilabo.microfront.controller;
 
 import com.medilabo.microfront.beans.NoteBean;
+import com.medilabo.microfront.beans.PatientBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,15 +54,19 @@ public class NoteController {
         return updateModelWithPatientNotes(patientId, model);
     }
 
-    @GetMapping("/notes/add")
-    public String showAddNote(
-            @RequestParam("patientId") Long patientId,
-            @RequestParam("patientLastName") String patientLastName,
-            Model model) {
+    @GetMapping("/notes/add/{patientId}")
+    public String showAddNote(@PathVariable("patientId") Long patientId, Model model) {
+
+        PatientBean patient = webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8081/patients/{id}", patientId)
+                .retrieve()
+                .bodyToMono(PatientBean.class)
+                .block();
 
         NoteBean note = new NoteBean();
         note.setPatientId(patientId);
-        note.setPatientLastName(patientLastName);
+        note.setPatientLastName(patient.getLastName());
         model.addAttribute("note", note);
         return "notes/add";
     }
@@ -121,6 +126,7 @@ public class NoteController {
     private String updateModelWithPatientNotes(Long patientId, Model model) {
         List<NoteBean> notes = fetchNotesByPatientId(patientId);
         model.addAttribute("notes", notes);
+        model.addAttribute("patientId", patientId);
         return "notes/list";
     }
 

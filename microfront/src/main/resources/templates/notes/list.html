@@ -38,11 +38,9 @@
 </div>
 <div class="container">
     <h2>Add a new note</h2>
-    <a th:if="${#lists.isEmpty(notes)}" th:href="@{/notes/add(patientId=${param.patientId}, patientLastName=${param.patientLastName})}" class="btn btn-primary">Add new Note</a>
-    <a th:if="${!#lists.isEmpty(notes)}" th:href="@{/notes/add(patientId=${notes[0].patientId}, patientLastName=${notes[0].patientLastName})}" class="btn btn-primary">Add new Note</a>
+    <a th:href="@{/notes/add/{patientId}(patientId=${patientId})}" class="btn btn-primary">Add new note</a>
     <a class="btn btn-danger btn-sm" href="/">Back to Patient List</a>
-
 </div>
-<script type="text/javascript" src="webjars/bootstrap/4.0.0-2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 </body>
 </html>
