@@ -39,5 +39,4 @@ public class RiskControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("None"));
     }
-
 }
