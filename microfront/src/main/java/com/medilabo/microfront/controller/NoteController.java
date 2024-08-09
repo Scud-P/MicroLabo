@@ -102,7 +102,7 @@ public class NoteController {
         return updateModelWithPatientNotes(patientId, model);
     }
 
-    private Long fetchPatientIdForNoteId(String id) {
+    public Long fetchPatientIdForNoteId(String id) {
         NoteBean note = webClientBuilder.build()
                 .get()
                 .uri("http://localhost:8083/notes/{id}", id)
