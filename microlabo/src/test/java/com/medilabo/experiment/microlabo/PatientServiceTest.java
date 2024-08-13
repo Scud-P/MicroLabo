@@ -100,6 +100,7 @@ public class PatientServiceTest {
                 (0L, "Falafel", "Smith", updatedBirthDate, "F", "555 Devil Drive", "222-111-111");
 
         when(patientRepository.findById(anyLong())).thenReturn(Optional.ofNullable(firstPatient));
+        when(patientRepository.existsByFirstNameAndLastNameAndBirthdateAndIdNot(anyString(), anyString(), any(LocalDate.class), anyLong())).thenReturn(false);
 
         when(patientRepository.save(any(Patient.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -114,6 +115,19 @@ public class PatientServiceTest {
         assertEquals(updatedPatient.getPhoneNumber(), resultingPatient.getPhoneNumber());
 
         verify(patientRepository, times(1)).save(any(Patient.class));
+    }
+
+    @Test
+    public void updatePatient_shouldThrowPatientAlreadyExistsException_whenPatientAlreadyExistsReturnsTrue() {
+        LocalDate updatedBirthDate = LocalDate.of(2018, 5, 8);
+        Patient updatedPatient = new Patient
+                (0L, "Falafel", "Smith", updatedBirthDate, "F", "555 Devil Drive", "222-111-111");
+
+        when(patientRepository.findById(anyLong())).thenReturn(Optional.ofNullable(firstPatient));
+        when(patientRepository.existsByFirstNameAndLastNameAndBirthdateAndIdNot(anyString(), anyString(), any(LocalDate.class), anyLong())).thenReturn(true);
+
+        assertThrows(PatientAlreadyExistsException.class, () -> patientService.updatePatient(updatedPatient));
+        verify(patientRepository, never()).save(any(Patient.class));
     }
 
     @Test

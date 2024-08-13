@@ -2,6 +2,7 @@ package com.medilabo.experiment.microlabo.service;
 
 import com.medilabo.experiment.microlabo.domain.Patient;
 import com.medilabo.experiment.microlabo.exception.PatientAlreadyExistsException;
+import com.medilabo.experiment.microlabo.exception.PatientNotFoundException;
 import com.medilabo.experiment.microlabo.repository.PatientRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -26,8 +27,8 @@ public class PatientService {
     }
 
     public Patient getPatientById(long id) {
-        Optional<Patient> optionalPatient = patientRepository.findById(id);
-        return optionalPatient.orElse(null);
+        return patientRepository.findById(id)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found for id: " + id));
     }
 
     @Transactional
@@ -59,7 +60,9 @@ public class PatientService {
 
     @Transactional
     public void deletePatientById(long id) {
-        patientRepository.deleteById(id);
+        Patient patientToDelete = patientRepository.findById(id)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found for id: " + id));
+        patientRepository.delete(patientToDelete);
     }
 
     public Integer getAgeById(long id) {
