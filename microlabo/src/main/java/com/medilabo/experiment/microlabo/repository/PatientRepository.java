@@ -27,4 +27,5 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Patient p WHERE p.firstName = :#{#patient.firstName} AND p.lastName = :#{#patient.lastName} AND p.birthdate = :#{#patient.birthdate}")
     boolean existsPatientByFirstNameAndLastNameAndBirthdate(Patient patient);
 
+    boolean existsByFirstNameAndLastNameAndBirthdateAndIdNot(String firstName, String lastName, LocalDate birthdate, Long id);
 }

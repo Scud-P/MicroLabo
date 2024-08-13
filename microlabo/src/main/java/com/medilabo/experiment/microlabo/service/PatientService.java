@@ -41,7 +41,13 @@ public class PatientService {
 
     @Transactional
     public Patient updatePatient(Patient patient) {
+
         Patient patientToUpdate = getPatientById(patient.getId());
+
+        if(isSamePatientExcludingCurrent(patient)) {
+            throw new PatientAlreadyExistsException("Patient can't be added because a patient with the same first name, last name and birthdate combination already exists");
+        }
+
         patientToUpdate.setFirstName(patient.getFirstName());
         patientToUpdate.setLastName(patient.getLastName());
         patientToUpdate.setBirthdate(patient.getBirthdate());
@@ -71,6 +77,14 @@ public class PatientService {
 
     public boolean isSamePatient(Patient patientToAdd) {
         return patientRepository.existsPatientByFirstNameAndLastNameAndBirthdate(patientToAdd);
+    }
+
+    private boolean isSamePatientExcludingCurrent(Patient patient) {
+        return patientRepository.existsByFirstNameAndLastNameAndBirthdateAndIdNot(
+                patient.getFirstName(),
+                patient.getLastName(),
+                patient.getBirthdate(),
+                patient.getId());
     }
 
 
