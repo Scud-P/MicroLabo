@@ -2,15 +2,17 @@ package com.medilabo.experiment.micronotes.service;
 
 import com.medilabo.experiment.micronotes.domain.Note;
 import com.medilabo.experiment.micronotes.domain.RiskWord;
+import com.medilabo.experiment.micronotes.exception.NoteNotFoundException;
+import com.medilabo.experiment.micronotes.exception.PatientNotFoundException;
 import com.medilabo.experiment.micronotes.repository.NoteRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,17 +21,31 @@ import java.util.stream.Stream;
 public class NoteService {
 
     @Autowired
+    private WebClient.Builder webClientBuilder;
+
+    @Autowired
     private NoteRepository noteRepository;
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
     public Note getNoteById(String id) {
-        Optional<Note> optionalNote = noteRepository.findById(id);
-        return optionalNote.orElse(null);
+        return noteRepository.findById(id).orElseThrow(
+                () -> new NoteNotFoundException("No note found for id: " + id)
+        );
     }
 
     public List<Note> getNotesByPatientId(Long patientId) {
+        Boolean existsPatient = webClientBuilder.build()
+                .get()
+                .uri("http://localhost:8081/patients/{id}/exists", patientId)
+                .retrieve()
+                .bodyToMono(Boolean.class)
+                .block();
+
+        if (Boolean.FALSE.equals(existsPatient)) {
+            throw new PatientNotFoundException("Patient not found for id: " + patientId);
+        }
         return noteRepository.findByPatientId(patientId);
     }
 

@@ -89,7 +89,9 @@ public class PatientService {
                 patient.getId());
     }
 
-
+    public boolean existsPatient(Long id) {
+        return patientRepository.existsById(id);
+    }
 
     /**
      * For testing purposes, we need to create Patients

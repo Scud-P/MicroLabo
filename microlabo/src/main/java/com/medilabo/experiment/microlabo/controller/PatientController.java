@@ -71,4 +71,10 @@ public class PatientController {
         return ResponseEntity.ok(gender);
     }
 
+    @GetMapping(value = "/{id}/exists")
+    public ResponseEntity<Boolean> checkExists(@PathVariable("id") Long id) {
+        boolean exists = patientService.existsPatient(id);
+        return ResponseEntity.ok(exists);
+    }
+
 }
