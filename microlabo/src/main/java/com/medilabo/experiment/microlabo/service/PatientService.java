@@ -45,7 +45,7 @@ public class PatientService {
         Patient patientToUpdate = getPatientById(patient.getId());
 
         if(isSamePatientExcludingCurrent(patient)) {
-            throw new PatientAlreadyExistsException("Patient can't be added because a patient with the same first name, last name and birthdate combination already exists");
+            throw new PatientAlreadyExistsException("Patient can't be updated because a patient with the same first name, last name and birthdate combination already exists");
         }
 
         patientToUpdate.setFirstName(patient.getFirstName());

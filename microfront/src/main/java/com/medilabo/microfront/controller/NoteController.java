@@ -19,7 +19,7 @@ public class NoteController {
     @GetMapping("/notes/patient/{patientId}")
     public String getNotes(@PathVariable("patientId") Long patientId,
                            Model model) {
-        return updateModelWithPatientNotes(patientId, model);
+            return updateModelWithPatientNotes(patientId, model);
     }
 
     @GetMapping("/notes/update/{id}")

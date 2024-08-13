@@ -26,9 +26,7 @@ public class PatientController {
 
     @GetMapping("/{id}")
     public Patient getPatientById(@PathVariable("id") Long id) {
-        Patient patient = patientService.getPatientById(id);
-        if (patient == null) throw new PatientNotFoundException("Patient with id " + id + " not found.");
-        return patient;
+        return patientService.getPatientById(id);
     }
 
     @PutMapping("/{id}")
