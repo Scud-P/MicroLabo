@@ -1,10 +1,11 @@
 package com.medilabo.experiment.microlabo.service;
 
 import com.medilabo.experiment.microlabo.domain.Patient;
+import com.medilabo.experiment.microlabo.exception.PatientAlreadyExistsException;
 import com.medilabo.experiment.microlabo.repository.PatientRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.medilabo.experiment.microlabo.util.SimpleDateUtil;
@@ -31,6 +32,9 @@ public class PatientService {
 
     @Transactional
     public Patient addPatient(Patient patient) {
+        if(isSamePatient(patient)) {
+            throw new PatientAlreadyExistsException("Patient can't be added because a patient with the same first name, last name and birthdate combination already exists");
+        }
         patient.setId(null);
         return patientRepository.save(patient);
     }
@@ -63,6 +67,10 @@ public class PatientService {
 
     public String getGenderById(Long id) {
         return patientRepository.findGenderById(id);
+    }
+
+    public boolean isSamePatient(Patient patientToAdd) {
+        return patientRepository.existsPatientByFirstNameAndLastNameAndBirthdate(patientToAdd);
     }
 
 

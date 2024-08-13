@@ -1,6 +1,7 @@
 package com.medilabo.experiment.microlabo.repository;
 
 import com.medilabo.experiment.microlabo.domain.Patient;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,8 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     @Query("SELECT p.gender FROM Patient p WHERE p.id = :id")
     String findGenderById(Long id);
+
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Patient p WHERE p.firstName = :#{#patient.firstName} AND p.lastName = :#{#patient.lastName} AND p.birthdate = :#{#patient.birthdate}")
+    boolean existsPatientByFirstNameAndLastNameAndBirthdate(Patient patient);
+
 }

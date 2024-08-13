@@ -1,6 +1,7 @@
 package com.medilabo.experiment.microlabo;
 
 import com.medilabo.experiment.microlabo.domain.Patient;
+import com.medilabo.experiment.microlabo.exception.PatientAlreadyExistsException;
 import com.medilabo.experiment.microlabo.repository.PatientRepository;
 import com.medilabo.experiment.microlabo.service.PatientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -71,9 +71,17 @@ public class PatientServiceTest {
 
     @Test
     public void addPatient_shouldSaveTheCorrectPatient() {
+        when(patientRepository.existsPatientByFirstNameAndLastNameAndBirthdate(firstPatient)).thenReturn(false);
         patientService.addPatient(firstPatient);
         assertNull(firstPatient.getId());
         verify(patientRepository, times(1)).save(firstPatient);
+    }
+
+    @Test
+    public void addPatient_shouldThrowException_WhenPatientAlreadyExists() {
+        when(patientRepository.existsPatientByFirstNameAndLastNameAndBirthdate(firstPatient)).thenReturn(true);
+        assertThrows(PatientAlreadyExistsException.class, () -> patientService.addPatient(firstPatient));
+        verify(patientRepository, times(0)).save(firstPatient);
     }
 
     @Test
@@ -127,6 +135,13 @@ public class PatientServiceTest {
         when(patientRepository.findGenderById(anyLong())).thenReturn(firstPatient.getGender());
         String foundGender = patientService.getGenderById(1L);
         assertEquals(firstPatient.getGender(), foundGender);
+    }
+
+    @Test
+    public void testIsSamePatient() {
+        when(patientRepository.existsPatientByFirstNameAndLastNameAndBirthdate(firstPatient)).thenReturn(true);
+        boolean result = patientService.isSamePatient(firstPatient);
+        assertTrue(result);
     }
 }
 
