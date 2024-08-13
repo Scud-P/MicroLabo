@@ -2,6 +2,7 @@ package com.medilabo.experiment.microlabo;
 
 import com.medilabo.experiment.microlabo.domain.Patient;
 import com.medilabo.experiment.microlabo.exception.PatientAlreadyExistsException;
+import com.medilabo.experiment.microlabo.exception.PatientNotFoundException;
 import com.medilabo.experiment.microlabo.repository.PatientRepository;
 import com.medilabo.experiment.microlabo.service.PatientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,10 +64,10 @@ public class PatientServiceTest {
     }
 
     @Test
-    public void getPatientById_shouldReturnNull_whenThePatientIsNotFound() {
+    public void getPatientById_shouldThrowPatientNotFoundException_whenPatientIsNotFound() {
+        long someIdThatDoesNotExist = 5L;
         when(patientRepository.findById(anyLong())).thenReturn(Optional.empty());
-        Object result = patientService.getPatientById(0);
-        assertNull(result);
+        assertThrows(PatientNotFoundException.class, () -> patientService.getPatientById(someIdThatDoesNotExist));
     }
 
     @Test
@@ -86,9 +87,9 @@ public class PatientServiceTest {
 
     @Test
     public void deletePatientById_shouldDeleteTheCorrectPatient() {
-        patientService.addPatient(firstPatient);
+        when(patientRepository.findById(1L)).thenReturn(Optional.of(firstPatient));
         patientService.deletePatientById(1L);
-        verify(patientRepository, times(1)).deleteById(1L);
+        verify(patientRepository, times(1)).deleteById(firstPatient.getId());
     }
 
     @Test
@@ -155,6 +156,14 @@ public class PatientServiceTest {
     public void testIsSamePatient() {
         when(patientRepository.existsPatientByFirstNameAndLastNameAndBirthdate(firstPatient)).thenReturn(true);
         boolean result = patientService.isSamePatient(firstPatient);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsSamePatientExcludingCurrent() {
+        when(patientRepository.existsByFirstNameAndLastNameAndBirthdateAndIdNot
+                (anyString(), anyString(), any(LocalDate.class), anyLong())).thenReturn(true);
+        boolean result = patientService.isSamePatientExcludingCurrent(firstPatient);
         assertTrue(result);
     }
 }

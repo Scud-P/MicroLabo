@@ -14,7 +14,6 @@ import com.medilabo.experiment.microlabo.util.SimpleDateUtil;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -60,9 +59,9 @@ public class PatientService {
 
     @Transactional
     public void deletePatientById(long id) {
-        Patient patientToDelete = patientRepository.findById(id)
+        patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found for id: " + id));
-        patientRepository.delete(patientToDelete);
+        patientRepository.deleteById(id);
     }
 
     public Integer getAgeById(long id) {
@@ -82,7 +81,7 @@ public class PatientService {
         return patientRepository.existsPatientByFirstNameAndLastNameAndBirthdate(patientToAdd);
     }
 
-    private boolean isSamePatientExcludingCurrent(Patient patient) {
+    public boolean isSamePatientExcludingCurrent(Patient patient) {
         return patientRepository.existsByFirstNameAndLastNameAndBirthdateAndIdNot(
                 patient.getFirstName(),
                 patient.getLastName(),
