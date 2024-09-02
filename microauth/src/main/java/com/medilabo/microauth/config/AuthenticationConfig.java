@@ -1,4 +1,4 @@
-package com.medilabo.AuthenticationService.config;
+package com.medilabo.microauth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +19,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class AuthenticationConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public UserDetailsService userDetailsService(){
+        return new CustomUserDetailsService();
     }
 
     @Bean
@@ -34,9 +34,10 @@ public class AuthenticationConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        return new CustomUserDetailsService();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(){

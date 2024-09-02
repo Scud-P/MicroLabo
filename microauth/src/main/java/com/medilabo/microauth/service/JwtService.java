@@ -1,4 +1,4 @@
-package com.medilabo.AuthenticationService.service;
+package com.medilabo.microauth.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

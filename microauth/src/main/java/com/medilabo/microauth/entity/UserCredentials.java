@@ -1,4 +1,4 @@
-package com.medilabo.AuthenticationService.entity;
+package com.medilabo.microauth.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

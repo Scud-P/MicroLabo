@@ -1,8 +1,8 @@
-package com.medilabo.AuthenticationService.controller;
+package com.medilabo.microauth.controller;
 
-import com.medilabo.AuthenticationService.entity.UserCredentials;
-import com.medilabo.AuthenticationService.service.AuthenticationService;
-import dto.AuthRequestDto;
+import com.medilabo.microauth.dto.AuthRequestDto;
+import com.medilabo.microauth.entity.UserCredentials;
+import com.medilabo.microauth.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,9 +40,10 @@ public class AuthenticationController {
             throw new RuntimeException("Invalid user credentials unable to get token");
         }
     }
-
+// TODO SWITCH TO POST IN CASE IT FUCKS
     @GetMapping("/validate")
-    public void validateToken(@RequestParam("token") String token) {
+    public String validateToken(@RequestParam("token") String token) {
         authenticationService.validateToken(token);
+        return "Token " + token + " has been validated by authentication module";
     }
 }

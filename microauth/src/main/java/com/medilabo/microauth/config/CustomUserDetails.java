@@ -1,6 +1,6 @@
-package com.medilabo.AuthenticationService.config;
+package com.medilabo.microauth.config;
 
-import com.medilabo.AuthenticationService.entity.UserCredentials;
+import com.medilabo.microauth.entity.UserCredentials;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

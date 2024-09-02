@@ -1,4 +1,4 @@
-package com.medilabo.experiment.gateway;
+package com.medilabo.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

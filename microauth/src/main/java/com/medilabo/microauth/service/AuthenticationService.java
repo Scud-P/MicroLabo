@@ -1,7 +1,7 @@
-package com.medilabo.AuthenticationService.service;
+package com.medilabo.microauth.service;
 
-import com.medilabo.AuthenticationService.entity.UserCredentials;
-import com.medilabo.AuthenticationService.repository.UserCredentialsRepository;
+import com.medilabo.microauth.entity.UserCredentials;
+import com.medilabo.microauth.repository.UserCredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,5 @@ public class AuthenticationService {
     public void validateToken(String token) {
         jwtService.validateToken(token);
     }
-
 
 }

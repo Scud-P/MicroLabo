@@ -1,4 +1,4 @@
-package dto;
+package com.medilabo.microauth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

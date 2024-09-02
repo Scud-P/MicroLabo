@@ -12,12 +12,14 @@
         <module name="microrisk" />
         <module name="microfront" />
         <module name="gateway" />
+        <module name="microauth" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="gateway" options="-parameters" />
+      <module name="microauth" options="-parameters" />
       <module name="microfront" options="-parameters" />
       <module name="microlabo" options="-parameters" />
       <module name="micronotes" options="-parameters" />

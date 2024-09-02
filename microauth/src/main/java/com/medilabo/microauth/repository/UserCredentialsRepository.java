@@ -1,6 +1,6 @@
-package com.medilabo.AuthenticationService.repository;
+package com.medilabo.microauth.repository;
 
-import com.medilabo.AuthenticationService.entity.UserCredentials;
+import com.medilabo.microauth.entity.UserCredentials;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

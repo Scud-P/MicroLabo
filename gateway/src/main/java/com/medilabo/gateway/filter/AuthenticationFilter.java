@@ -1,6 +1,6 @@
-package com.medilabo.experiment.gateway.filter;
+package com.medilabo.gateway.filter;
 
-import com.medilabo.experiment.gateway.util.JwtUtil;
+import com.medilabo.gateway.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;

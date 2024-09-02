@@ -1,4 +1,4 @@
-package com.medilabo.experiment.gateway.util;
+package com.medilabo.gateway.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
