@@ -16,13 +16,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
+@RequestMapping("/api")
 public class PatientController {
 
     @Autowired
     private WebClient.Builder webClientBuilder;
 
-    @GetMapping("/api/home")
-    public String home(@CookieValue(name = "token", required = false) String token, Model model) {
+    @GetMapping("/home")
+    public String home(@CookieValue(name = "token", required = false) String token,
+                       Model model) {
         if (token == null || token.isEmpty()) {
             return "redirect:/login";
         }
@@ -47,7 +49,7 @@ public class PatientController {
         return "home";
     }
 
-    @GetMapping("/api/patients/{id}")
+    @GetMapping("/patients/{id}")
     public String getPatient(@PathVariable("id") long id, Model model,
                              @CookieValue(value = "token", required = false) String token) {
 
@@ -87,11 +89,14 @@ public class PatientController {
 
 
     @GetMapping("/patients/update/{id}")
-    public String showUpdatePatient(@PathVariable("id") long id, Model model) {
+    public String showUpdatePatient(@PathVariable("id") long id,
+                                    @CookieValue(value = "token", required = false) String token,
+                                    Model model) {
         try {
             PatientBean patient = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8081/patients/{id}", id)
+                    .uri("http://localhost:8080/patients/{id}", id)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
                             clientResponse -> Mono.error(new PatientNotFoundException("Patient not found for id: " + id)))
@@ -108,12 +113,16 @@ public class PatientController {
     }
 
     @PutMapping("/patients/{id}")
-    public String updatePatient(@PathVariable("id") Long id, @ModelAttribute PatientBean patient, Model model) {
+    public String updatePatient(@PathVariable("id") long id,
+                                @ModelAttribute PatientBean patient,
+                                Model model,
+                                @CookieValue(value = "token", required = false) String token) {
         try {
             WebClient webClient = webClientBuilder.build();
 
             PatientBean updatedPatient = webClient.put()
-                    .uri("http://localhost:8081/patients/{id}", id)
+                    .uri("http://localhost:8080/patients/{id}", id)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .bodyValue(patient)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
@@ -128,7 +137,7 @@ public class PatientController {
                     .bodyToMono(PatientBean.class)
                     .block();
             model.addAttribute("patient", updatedPatient);
-            return "redirect:/patients/" + id;
+            return "redirect:/api/patients/" + id;
 
         } catch (PatientAlreadyExistsException | PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -144,11 +153,14 @@ public class PatientController {
     }
 
     @PostMapping("/patients/validate")
-    public String validatePatient(@ModelAttribute PatientBean patient, @CookieValue(name = "token", required = false) String token, Model model) {
+    public String validatePatient(@ModelAttribute PatientBean patient,
+                                  @CookieValue(name = "token", required = false) String token,
+                                  Model model) {
         WebClient webClient = webClientBuilder.build();
         try {
             webClient.post()
-                    .uri("http://localhost:8081/patients/validate")
+                    .uri("http://localhost:8080/patients/validate")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .bodyValue(patient)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
@@ -165,12 +177,15 @@ public class PatientController {
     }
 
     @DeleteMapping("/patients/{id}")
-    public String deletePatient(@PathVariable("id") Long id, @CookieValue(name = "token", required = false) String token, Model model) {
+    public String deletePatient(@PathVariable("id") Long id,
+                                @CookieValue(name = "token", required = false) String token,
+                                Model model) {
         WebClient webClient = webClientBuilder.build();
 
         try {
             webClient.delete()
-                    .uri("http://localhost:8081/patients/{id}", id)
+                    .uri("http://localhost:8080/patients/{id}", id)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
                             clientResponse -> Mono.error(new PatientNotFoundException(
@@ -184,5 +199,4 @@ public class PatientController {
             return "error";
         }
     }
-
 }

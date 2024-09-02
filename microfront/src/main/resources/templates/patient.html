@@ -35,8 +35,8 @@
         <label for="risk" class="form-label">Risk</label>
         <p id="risk" class="form-control" th:text="${risk}">Risk</p>
     </div>
-    <a class="btn btn-primary" href="/">Back</a>
-    <a class="btn btn-primary" th:href="@{/patients/update/{id}(id=${patient.id})}">Edit</a>
+    <a class="btn btn-primary" href="/api/home">Back</a>
+    <a class="btn btn-primary" th:href="@{/api/patients/update/{id}(id=${patient.id})}">Edit</a>
 </div>
 <script type="text/javascript" src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
