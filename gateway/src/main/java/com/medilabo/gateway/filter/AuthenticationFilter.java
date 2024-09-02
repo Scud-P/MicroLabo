@@ -24,16 +24,25 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
             if (routeValidator.isSecured.test(exchange.getRequest())) {
-                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    //TODO create custom missing header exception
-                    throw new RuntimeException("Missing authorization header");
+                // Check for the token in the Authorization header first
+                String authorizationHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+
+                if (authorizationHeader == null) {
+                    // If not present, check for the token in cookies
+                    if (exchange.getRequest().getCookies().containsKey("token")) {
+                        authorizationHeader = exchange.getRequest().getCookies().getFirst("token").getValue();
+                    } else {
+                        // Both header and cookie are missing, throw exception
+                        throw new RuntimeException("Missing authorization header or cookie");
+                    }
                 }
 
-                String authorizationHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+                // Remove the "Bearer " part if the header is present
                 if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                    // Remove the "Bearer " part of the header, so 6 letters plus the space.
                     authorizationHeader = authorizationHeader.substring(7);
                 }
+
+                // Validate the token
                 try {
                     jwtUtil.validateToken(authorizationHeader);
                 } catch (Exception e) {
@@ -43,6 +52,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             return chain.filter(exchange);
         });
     }
+
 
     public static class Config {
     }

@@ -1,7 +1,6 @@
-package com.medilabo.experiment.microlabo.repository;
+package com.medilabo.microlabo.repository;
 
-import com.medilabo.experiment.microlabo.domain.Patient;
-import org.springframework.cglib.core.Local;
+import com.medilabo.microlabo.domain.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

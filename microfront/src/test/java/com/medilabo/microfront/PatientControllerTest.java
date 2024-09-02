@@ -215,7 +215,11 @@ public class PatientControllerTest {
                 .block())
                 .thenReturn("None");
 
-        String result = patientController.getPatient(patientId, model);
+        // TODO FIX THIS
+
+        String authHeader = "someRandomHeader";
+
+        String result = patientController.getPatient(patientId, model, authHeader);
 
         verify(model, times(1)).addAttribute("patient", firstPatient);
 

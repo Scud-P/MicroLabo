@@ -33,7 +33,7 @@
                     <td th:text="${patient.phoneNumber}"></td>
                     <td>
                         <a th:href="@{/notes/patient/{patientId}(patientId=${patient.id})}" class="btn btn-primary">Show Notes</a>
-                        <a th:href="@{/patients/{id}(id=${patient.id})}" class="btn btn-primary">Show Patient</a>
+                        <a th:href="@{/api/patients/{id}(id=${patient.id})}" class="btn btn-primary">Show Patient</a>
                         <form th:action="@{/patients/{id}(id=${patient.id})}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this patient?');">
                             <input type="hidden" name="_method" value="delete"/>
                             <button type="submit" class="btn btn-danger">Delete</button>

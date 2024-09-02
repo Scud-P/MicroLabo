@@ -1,4 +1,4 @@
-package com.medilabo.experiment.micronotes.exception;
+package com.medilabo.micronotes.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,8 +1,8 @@
-package com.medilabo.experiment.micronotes;
+package com.medilabo.micronotes;
 
-import com.medilabo.experiment.micronotes.domain.Note;
-import com.medilabo.experiment.micronotes.repository.NoteRepository;
-import com.medilabo.experiment.micronotes.service.NoteService;
+import com.medilabo.micronotes.domain.Note;
+import com.medilabo.micronotes.repository.NoteRepository;
+import com.medilabo.micronotes.service.NoteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

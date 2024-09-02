@@ -1,4 +1,4 @@
-package com.medilabo.experiment.microlabo.domain;
+package com.medilabo.microlabo.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

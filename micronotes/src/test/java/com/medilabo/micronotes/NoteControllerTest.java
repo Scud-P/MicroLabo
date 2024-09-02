@@ -1,10 +1,10 @@
-package com.medilabo.experiment.micronotes;
+package com.medilabo.micronotes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.medilabo.experiment.micronotes.controller.NoteController;
-import com.medilabo.experiment.micronotes.domain.Note;
-import com.medilabo.experiment.micronotes.exception.NoteNotFoundException;
-import com.medilabo.experiment.micronotes.service.NoteService;
+import com.medilabo.micronotes.controller.NoteController;
+import com.medilabo.micronotes.domain.Note;
+import com.medilabo.micronotes.exception.NoteNotFoundException;
+import com.medilabo.micronotes.service.NoteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

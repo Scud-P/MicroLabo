@@ -1,6 +1,6 @@
-package com.medilabo.experiment.micronotes.repository;
+package com.medilabo.micronotes.repository;
 
-import com.medilabo.experiment.micronotes.domain.Note;
+import com.medilabo.micronotes.domain.Note;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;

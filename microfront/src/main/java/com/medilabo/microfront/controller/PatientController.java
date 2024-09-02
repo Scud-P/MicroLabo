@@ -24,7 +24,7 @@ public class PatientController {
     @GetMapping("/api/home")
     public String home(@CookieValue(name = "token", required = false) String token, Model model) {
         if (token == null || token.isEmpty()) {
-            return "redirect:/login"; // Redirect to log in if the token is missing
+            return "redirect:/login";
         }
         return updateModelWithPatients(token, model);
     }
@@ -33,7 +33,7 @@ public class PatientController {
 
         WebClient webClient = webClientBuilder.build();
         return webClient.get()
-                .uri("http://localhost:8081/patients")
+                .uri("http://localhost:8080/patients/list")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PatientBean.class)
@@ -47,13 +47,15 @@ public class PatientController {
         return "home";
     }
 
-    @GetMapping("/patients/{id}")
-    public String getPatient(@PathVariable("id") long id, Model model) {
+    @GetMapping("/api/patients/{id}")
+    public String getPatient(@PathVariable("id") long id, Model model,
+                             @CookieValue(value = "token", required = false) String token) {
 
         try {
             PatientBean patient = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8081/patients/{id}", id)
+                    .uri("http://localhost:8080/patients/{id}", id)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
                             clientResponse -> Mono.error(new PatientNotFoundException("Patient not found for id: " + id)))
@@ -65,7 +67,8 @@ public class PatientController {
 
             String risk = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8084/risk/{patientId}", id)
+                    .uri("http://localhost:8080/risk/{patientId}", id)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -79,8 +82,9 @@ public class PatientController {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
         }
-
     }
+
+
 
     @GetMapping("/patients/update/{id}")
     public String showUpdatePatient(@PathVariable("id") long id, Model model) {

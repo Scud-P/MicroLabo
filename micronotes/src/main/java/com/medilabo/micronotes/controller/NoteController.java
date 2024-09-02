@@ -1,8 +1,8 @@
-package com.medilabo.experiment.micronotes.controller;
+package com.medilabo.micronotes.controller;
 
-import com.medilabo.experiment.micronotes.domain.Note;
-import com.medilabo.experiment.micronotes.exception.NoteNotFoundException;
-import com.medilabo.experiment.micronotes.service.NoteService;
+import com.medilabo.micronotes.exception.NoteNotFoundException;
+import com.medilabo.micronotes.service.NoteService;
+import com.medilabo.micronotes.domain.Note;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

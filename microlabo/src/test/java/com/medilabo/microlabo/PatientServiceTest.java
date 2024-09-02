@@ -1,10 +1,10 @@
-package com.medilabo.experiment.microlabo;
+package com.medilabo.microlabo;
 
-import com.medilabo.experiment.microlabo.domain.Patient;
-import com.medilabo.experiment.microlabo.exception.PatientAlreadyExistsException;
-import com.medilabo.experiment.microlabo.exception.PatientNotFoundException;
-import com.medilabo.experiment.microlabo.repository.PatientRepository;
-import com.medilabo.experiment.microlabo.service.PatientService;
+import com.medilabo.microlabo.domain.Patient;
+import com.medilabo.microlabo.exception.PatientAlreadyExistsException;
+import com.medilabo.microlabo.exception.PatientNotFoundException;
+import com.medilabo.microlabo.repository.PatientRepository;
+import com.medilabo.microlabo.service.PatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

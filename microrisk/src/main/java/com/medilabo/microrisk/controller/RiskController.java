@@ -1,6 +1,6 @@
-package com.medilabo.experiment.microrisk.controller;
+package com.medilabo.microrisk.controller;
 
-import com.medilabo.experiment.microrisk.service.RiskService;
+import com.medilabo.microrisk.service.RiskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

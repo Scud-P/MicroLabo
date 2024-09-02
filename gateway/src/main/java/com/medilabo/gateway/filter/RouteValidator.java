@@ -17,7 +17,8 @@ public class RouteValidator {
             "/auth/validate",
             "/auth/isAuthenticated",
             "/api-docs",
-            "/api/login"
+            "/api/login",
+            "/webjars/bootstrap/5.3.0/css/bootstrap.min.css"
             );
 
     public Predicate<ServerHttpRequest> isSecured =

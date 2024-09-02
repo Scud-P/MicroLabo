@@ -1,4 +1,4 @@
-package com.medilabo.experiment.micronotes.domain;
+package com.medilabo.micronotes.domain;
 
 import lombok.Getter;
 

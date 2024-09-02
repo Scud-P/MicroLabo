@@ -1,9 +1,9 @@
-package com.medilabo.experiment.microlabo.service;
+package com.medilabo.microlabo.service;
 
-import com.medilabo.experiment.microlabo.domain.Patient;
-import com.medilabo.experiment.microlabo.exception.PatientAlreadyExistsException;
-import com.medilabo.experiment.microlabo.exception.PatientNotFoundException;
-import com.medilabo.experiment.microlabo.repository.PatientRepository;
+import com.medilabo.microlabo.exception.PatientAlreadyExistsException;
+import com.medilabo.microlabo.exception.PatientNotFoundException;
+import com.medilabo.microlabo.repository.PatientRepository;
+import com.medilabo.microlabo.domain.Patient;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.transaction.annotation.Transactional;

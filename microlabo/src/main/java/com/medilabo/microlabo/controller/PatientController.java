@@ -1,8 +1,8 @@
-package com.medilabo.experiment.microlabo.controller;
+package com.medilabo.microlabo.controller;
 
-import com.medilabo.experiment.microlabo.domain.Patient;
-import com.medilabo.experiment.microlabo.exception.PatientNotFoundException;
-import com.medilabo.experiment.microlabo.service.PatientService;
+import com.medilabo.microlabo.domain.Patient;
+import com.medilabo.microlabo.exception.PatientNotFoundException;
+import com.medilabo.microlabo.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
-    @GetMapping("")
+    @GetMapping("/list")
     public List<Patient> patients() {
         return patientService.getAllPatients();
     }

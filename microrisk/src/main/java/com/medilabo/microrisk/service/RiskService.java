@@ -1,7 +1,7 @@
-package com.medilabo.experiment.microrisk.service;
+package com.medilabo.microrisk.service;
 
-import com.medilabo.experiment.microrisk.domain.ExclusionWord;
-import com.medilabo.experiment.microrisk.domain.RiskWord;
+import com.medilabo.microrisk.domain.ExclusionWord;
+import com.medilabo.microrisk.domain.RiskWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;

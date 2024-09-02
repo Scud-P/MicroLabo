@@ -1,10 +1,10 @@
-package com.medilabo.experiment.micronotes.service;
+package com.medilabo.micronotes.service;
 
-import com.medilabo.experiment.micronotes.domain.Note;
-import com.medilabo.experiment.micronotes.domain.RiskWord;
-import com.medilabo.experiment.micronotes.exception.NoteNotFoundException;
-import com.medilabo.experiment.micronotes.exception.PatientNotFoundException;
-import com.medilabo.experiment.micronotes.repository.NoteRepository;
+import com.medilabo.micronotes.domain.Note;
+import com.medilabo.micronotes.domain.RiskWord;
+import com.medilabo.micronotes.exception.NoteNotFoundException;
+import com.medilabo.micronotes.exception.PatientNotFoundException;
+import com.medilabo.micronotes.repository.NoteRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

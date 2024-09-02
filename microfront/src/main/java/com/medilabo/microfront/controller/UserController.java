@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +39,14 @@ public class UserController {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-        System.out.println(token);
-        // Set up headers with the token
+
+        ResponseCookie cookie = ResponseCookie.from("token", token)
+                .path("/")
+                .httpOnly(true)
+                .build();
+
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, "token=" + token + "; Path=/; HttpOnly;");
+        headers.add(HttpHeaders.SET_COOKIE, cookie.toString());
 
         // Redirect to the home page
         headers.setLocation(URI.create("/api/home"));

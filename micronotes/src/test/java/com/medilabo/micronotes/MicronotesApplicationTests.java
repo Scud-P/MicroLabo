@@ -1,4 +1,4 @@
-package com.medilabo.experiment.micronotes;
+package com.medilabo.micronotes;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
