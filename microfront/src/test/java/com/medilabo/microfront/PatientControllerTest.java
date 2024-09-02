@@ -77,7 +77,10 @@ public class PatientControllerTest {
                 .collectList()
                 .block()).thenReturn(patients);
 
-        String result = patientController.home(model);
+        // TODO FIX THAT
+        String token = "someRandomToken";
+
+        String result = patientController.home(token, model);
 
         assertEquals("home", result);
         verify(model).addAttribute("patients", patients);

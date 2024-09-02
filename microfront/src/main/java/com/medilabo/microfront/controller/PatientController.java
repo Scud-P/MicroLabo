@@ -4,6 +4,7 @@ import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +21,30 @@ public class PatientController {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
-    @GetMapping("")
-    public String home(Model model) {
-        return updateModelWithPatients(model);
+    @GetMapping("/api/home")
+    public String home(@CookieValue(name = "token", required = false) String token, Model model) {
+        if (token == null || token.isEmpty()) {
+            return "redirect:/login"; // Redirect to log in if the token is missing
+        }
+        return updateModelWithPatients(token, model);
+    }
+
+    private List<PatientBean> fetchPatients(String token) {
+
+        WebClient webClient = webClientBuilder.build();
+        return webClient.get()
+                .uri("http://localhost:8081/patients")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .retrieve()
+                .bodyToFlux(PatientBean.class)
+                .collectList()
+                .block();
+    }
+
+    private String updateModelWithPatients(String token, Model model) {
+        List<PatientBean> patients = fetchPatients(token);
+        model.addAttribute("patients", patients);
+        return "home";
     }
 
     @GetMapping("/patients/{id}")
@@ -118,7 +140,7 @@ public class PatientController {
     }
 
     @PostMapping("/patients/validate")
-    public String validatePatient(@ModelAttribute PatientBean patient, Model model) {
+    public String validatePatient(@ModelAttribute PatientBean patient, @CookieValue(name = "token", required = false) String token, Model model) {
         WebClient webClient = webClientBuilder.build();
         try {
             webClient.post()
@@ -130,7 +152,7 @@ public class PatientController {
                                     "Patient can't be added because a patient with the same first name, last name and birthdate combination already exists")))
                     .bodyToMono(PatientBean.class)
                     .block();
-            return updateModelWithPatients(model);
+            return updateModelWithPatients(token, model);
 
         } catch (PatientAlreadyExistsException e) {
             model.addAttribute("errorMessage", e.getMessage());
@@ -139,7 +161,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/patients/{id}")
-    public String deletePatient(@PathVariable("id") Long id, Model model) {
+    public String deletePatient(@PathVariable("id") Long id, @CookieValue(name = "token", required = false) String token, Model model) {
         WebClient webClient = webClientBuilder.build();
 
         try {
@@ -151,28 +173,12 @@ public class PatientController {
                                     "Patient not found for id: " + id)))
                     .toBodilessEntity()
                     .block();
-            return updateModelWithPatients(model);
+            return updateModelWithPatients(token, model);
 
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
         }
-    }
-
-    private List<PatientBean> fetchPatients() {
-        WebClient webClient = webClientBuilder.build();
-        return webClient.get()
-                .uri("http://localhost:8081/patients")
-                .retrieve()
-                .bodyToFlux(PatientBean.class)
-                .collectList()
-                .block();
-    }
-
-    private String updateModelWithPatients(Model model) {
-        List<PatientBean> patients = fetchPatients();
-        model.addAttribute("patients", patients);
-        return "home";
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,7 +43,7 @@ public class AuthenticationController {
     }
 // TODO SWITCH TO POST IN CASE IT FUCKS
     @GetMapping("/validate")
-    public String validateToken(@RequestParam("token") String token) {
+    public String validateToken(@RequestHeader("token") String token) {
         authenticationService.validateToken(token);
         return "Token " + token + " has been validated by authentication module";
     }

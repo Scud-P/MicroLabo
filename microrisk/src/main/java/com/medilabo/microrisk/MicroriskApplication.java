@@ -1,4 +1,4 @@
-package com.medilabo.experiment.microrisk;
+package com.medilabo.microrisk;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

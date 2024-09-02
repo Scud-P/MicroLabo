@@ -1,4 +1,4 @@
-package com.medilabo.experiment.micronotes;
+package com.medilabo.micronotes;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

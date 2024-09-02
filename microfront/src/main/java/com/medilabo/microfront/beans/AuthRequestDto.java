@@ -1,4 +1,4 @@
-package com.medilabo.microauth.dto;
+package com.medilabo.microfront.beans;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
