@@ -7,7 +7,7 @@
 <body>
 <div class="container">
     <h2>Edit Note</h2>
-    <form th:object="${note}" th:action="@{/notes/{id}(id=${note.id})}" th:method="PUT">
+    <form th:object="${note}" th:action="@{/api/notes/{id}(id=${note.id})}" th:method="PUT">
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" th:field="*{id}"/>
         <input type="hidden" th:field="*{patientId}"/>

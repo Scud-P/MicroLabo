@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <form th:action="@{/notes/validate}" method="post" th:object="${note}">
+    <form th:action="@{/api/notes/validate}" method="post" th:object="${note}">
         <input type="hidden" th:field="*{patientId}" />
         <input type="hidden" th:field="*{patientLastName}" />
         <div class="form-group">
@@ -24,7 +24,7 @@
         </div>
         <div class="d-flex mt-3">
             <button type="submit" class="btn btn-primary me-2">Save Note</button>
-            <a th:href="@{/notes/list(patientId=${note.patientId}, patientLastName=${note.patientLastName})}" class="btn btn-danger">Cancel</a>
+            <a th:href="@{/api/notes/patient/{patientId}(patientId=${note.patientId})}" class="btn btn-danger">Cancel</a>
         </div>
     </form>
 </div>

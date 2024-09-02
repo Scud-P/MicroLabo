@@ -14,6 +14,7 @@ import lombok.Getter;
         ANORMAL("Anormal"),
         CHOLESTEROL("Cholestérol"),
         VERTIGES("Vertiges"),
+        VERTIGE("Vertige"),
         RECHUTE("Rechute"),
         REACTION("Réaction"),
         ANTICORPS("Anticorps"),
