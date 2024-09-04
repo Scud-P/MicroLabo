@@ -26,7 +26,6 @@ public class UserController {
         return "login";
     }
 
-
     // TODO handle Bad Credentials
 
     @PostMapping("/api/login")
