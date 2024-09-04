@@ -25,7 +25,6 @@ public class AuthenticationController {
         authenticationService.saveUser(user);
     }
 
-
     //TODO add custom userNotFoundException (extends RunTimeException)
     @PostMapping("/token")
     public String getToken(@RequestBody AuthRequestDto authRequestDto) {

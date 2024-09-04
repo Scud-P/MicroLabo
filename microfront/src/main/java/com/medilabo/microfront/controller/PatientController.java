@@ -35,7 +35,7 @@ public class PatientController {
 
         WebClient webClient = webClientBuilder.build();
         return webClient.get()
-                .uri("http://localhost:8080/patients/list")
+                .uri("/patients/list")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PatientBean.class)
@@ -56,7 +56,7 @@ public class PatientController {
         try {
             PatientBean patient = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8080/patients/{id}", id)
+                    .uri("/patients/{id}", id)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
@@ -95,7 +95,7 @@ public class PatientController {
         try {
             PatientBean patient = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8080/patients/{id}", id)
+                    .uri("/patients/{id}", id)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
@@ -121,7 +121,7 @@ public class PatientController {
             WebClient webClient = webClientBuilder.build();
 
             PatientBean updatedPatient = webClient.put()
-                    .uri("http://localhost:8080/patients/{id}", id)
+                    .uri("/patients/{id}", id)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .bodyValue(patient)
                     .retrieve()
@@ -159,7 +159,7 @@ public class PatientController {
         WebClient webClient = webClientBuilder.build();
         try {
             webClient.post()
-                    .uri("http://localhost:8080/patients/validate")
+                    .uri("/patients/validate")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .bodyValue(patient)
                     .retrieve()
@@ -184,7 +184,7 @@ public class PatientController {
 
         try {
             webClient.delete()
-                    .uri("http://localhost:8080/patients/{id}", id)
+                    .uri("/patients/{id}", id)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,

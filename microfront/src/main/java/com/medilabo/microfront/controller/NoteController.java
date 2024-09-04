@@ -38,7 +38,7 @@ public class NoteController {
     private List<NoteBean> fetchNotesByPatientId(String token, Long patientId) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8080/notes/patient/{patientId}", patientId)
+                .uri("/notes/patient/{patientId}", patientId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError,
@@ -63,7 +63,7 @@ public class NoteController {
         try {
             NoteBean note = webClientBuilder.build()
                     .get()
-                    .uri("http://localhost:8080/notes/{id}", id)
+                    .uri("/notes/{id}", id)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .onStatus(HttpStatusCode::is4xxClientError,
@@ -89,7 +89,7 @@ public class NoteController {
         try {
             webClientBuilder.build()
                     .put()
-                    .uri("http://localhost:8080/notes/{id}", id)
+                    .uri("/notes/{id}", id)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .bodyValue(note)
                     .retrieve()
@@ -115,7 +115,7 @@ public class NoteController {
 
         PatientBean patient = webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8080/patients/{id}", patientId)
+                .uri("/patients/{id}", patientId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(PatientBean.class)
@@ -135,7 +135,7 @@ public class NoteController {
 
         webClientBuilder.build()
                 .post()
-                .uri("http://localhost:8080/notes/validate")
+                .uri("/notes/validate")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(note)
                 .retrieve()
@@ -157,7 +157,7 @@ public class NoteController {
 
             webClientBuilder.build()
                     .delete()
-                    .uri("http://localhost:8080/notes/{id}", id)
+                    .uri("/notes/{id}", id)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .toBodilessEntity()
@@ -174,7 +174,7 @@ public class NoteController {
                                         String id) {
         NoteBean note = webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8080/notes/{id}", id)
+                .uri("/notes/{id}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(NoteBean.class)
