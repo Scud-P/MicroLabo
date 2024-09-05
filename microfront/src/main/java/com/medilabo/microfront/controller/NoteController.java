@@ -35,7 +35,7 @@ public class NoteController {
         }
     }
 
-    private List<NoteBean> fetchNotesByPatientId(String token, Long patientId) {
+    public List<NoteBean> fetchNotesByPatientId(String token, Long patientId) {
         return webClientBuilder.build()
                 .get()
                 .uri("/notes/patient/{patientId}", patientId)
@@ -49,7 +49,7 @@ public class NoteController {
                 .block();
     }
 
-    private String updateModelWithPatientNotes(String token, Long patientId, Model model) {
+    public String updateModelWithPatientNotes(String token, Long patientId, Model model) {
         List<NoteBean> notes = fetchNotesByPatientId(token, patientId);
         model.addAttribute("notes", notes);
         model.addAttribute("patientId", patientId);

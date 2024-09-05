@@ -1,18 +1,13 @@
 package com.medilabo.microfront;
 
-import com.medilabo.microfront.controller.UserController;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.mockito.Mockito.*;
@@ -20,7 +15,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UserController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 public class UserControllerTest {
 
     @Autowired
@@ -29,17 +25,21 @@ public class UserControllerTest {
     @MockBean
     private WebClient.Builder webClientBuilder;
 
-    private MockWebServer mockWebServer;
+    private static MockWebServer gatewayMockServer;
+    private static MockWebServer authMockServer;
 
-    @BeforeEach
-    void setUp() throws Exception {
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
+    @BeforeAll
+    public static void startMockServers() throws Exception {
+        gatewayMockServer = new MockWebServer();
+        gatewayMockServer.start(8080);
+        authMockServer = new MockWebServer();
+        authMockServer.start(8085);
     }
 
-    @AfterEach
-    void tearDown() throws Exception {
-        mockWebServer.shutdown();
+    @AfterAll
+    public static void shutDown() throws Exception {
+        gatewayMockServer.shutdown();
+        authMockServer.shutdown();
     }
 
     @Test
@@ -51,13 +51,22 @@ public class UserControllerTest {
 
     @Test
     public void testValidateLoginSuccess() throws Exception {
-        when(webClientBuilder.build()).thenReturn(WebClient.builder().build());
+        String mockToken = "definitelyAValidToken";
+        authMockServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(mockToken)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl("http://localhost:8085")
+                .build());
+
         mockMvc.perform(post("/api/login")
                         .param("username", "bob")
                         .param("password", "password"))
                 .andExpect(status().isFound())
                 .andExpect(header().string("Location", "/api/home"))
-                .andExpect(cookie().exists("token"));
+                .andExpect(cookie().value("token", mockToken));
     }
 }
 
