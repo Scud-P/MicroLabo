@@ -4,6 +4,7 @@ import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
 import com.medilabo.microfront.service.PatientService;
+import com.medilabo.microfront.service.RiskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -26,6 +27,9 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private RiskService riskService;
+
     @GetMapping("/home")
     public String home(@CookieValue(name = "token", required = false) String token,
                        Model model) {
@@ -34,18 +38,6 @@ public class PatientController {
         }
         return updateModelWithPatients(token, model);
     }
-
-//    public List<PatientBean> fetchPatients(String token) {
-//
-//        WebClient webClient = webClientBuilder.build();
-//        return webClient.get()
-//                .uri("/patients/list")
-//                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-//                .retrieve()
-//                .bodyToFlux(PatientBean.class)
-//                .collectList()
-//                .block();
-//    }
 
     public String updateModelWithPatients(String token, Model model) {
         List<PatientBean> patients = patientService.fetchPatients(token);
@@ -58,26 +50,12 @@ public class PatientController {
                              @CookieValue(value = "token", required = false) String token) {
 
         try {
-            PatientBean patient = webClientBuilder.build()
-                    .get()
-                    .uri("/patients/{id}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            clientResponse -> Mono.error(new PatientNotFoundException("Patient not found for id: " + id)))
-                    .bodyToMono(PatientBean.class)
-                    .block();
+            PatientBean patient = patientService.fetchPatientById(id, token);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String formattedDate = patient.getBirthdate().format(formatter);
 
-            String risk = webClientBuilder.build()
-                    .get()
-                    .uri("http://localhost:8080/risk/{patientId}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+            String risk = riskService.fetchRiskById(id, token);
 
             model.addAttribute("patient", patient);
             model.addAttribute("formattedBirthdate", formattedDate);
@@ -90,23 +68,12 @@ public class PatientController {
         }
     }
 
-
-
     @GetMapping("/patients/update/{id}")
     public String showUpdatePatient(@PathVariable("id") long id,
                                     @CookieValue(value = "token", required = false) String token,
                                     Model model) {
         try {
-            PatientBean patient = webClientBuilder.build()
-                    .get()
-                    .uri("/patients/{id}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            clientResponse -> Mono.error(new PatientNotFoundException("Patient not found for id: " + id)))
-                    .bodyToMono(PatientBean.class)
-                    .block();
-
+            PatientBean patient = patientService.fetchPatientById(id, token);
             model.addAttribute("patient", patient);
             return "update";
 
@@ -122,24 +89,7 @@ public class PatientController {
                                 Model model,
                                 @CookieValue(value = "token", required = false) String token) {
         try {
-            WebClient webClient = webClientBuilder.build();
-
-            PatientBean updatedPatient = webClient.put()
-                    .uri("/patients/{id}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .bodyValue(patient)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            clientResponse -> {
-                                if (clientResponse.statusCode() == HttpStatusCode.valueOf(409)) {
-                                    return Mono.error(new PatientAlreadyExistsException(
-                                            "Patient can't be updated because a patient with the same first name, last name and birthdate combination already exists"));
-                                } else {
-                                    return Mono.error(new PatientNotFoundException("Patient not found for id: " + id));
-                                }
-                            })
-                    .bodyToMono(PatientBean.class)
-                    .block();
+            PatientBean updatedPatient = patientService.updatePatient(id, patient, token);
             model.addAttribute("patient", updatedPatient);
             return "redirect:/api/patients/" + id;
 
