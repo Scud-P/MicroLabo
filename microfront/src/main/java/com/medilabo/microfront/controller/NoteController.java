@@ -4,6 +4,7 @@ import com.medilabo.microfront.beans.NoteBean;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.NoteNotFoundException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
+import com.medilabo.microfront.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +19,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/api")
 public class NoteController {
+
+    @Autowired
+    private NoteService noteService;
 
     @Autowired
     private WebClient.Builder webClientBuilder;
@@ -35,22 +39,8 @@ public class NoteController {
         }
     }
 
-    public List<NoteBean> fetchNotesByPatientId(String token, Long patientId) {
-        return webClientBuilder.build()
-                .get()
-                .uri("/notes/patient/{patientId}", patientId)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError,
-                        clientResponse -> Mono.error(new PatientNotFoundException(
-                                "Patient not found for id: " + patientId)))
-                .bodyToFlux(NoteBean.class)
-                .collectList()
-                .block();
-    }
-
     public String updateModelWithPatientNotes(String token, Long patientId, Model model) {
-        List<NoteBean> notes = fetchNotesByPatientId(token, patientId);
+        List<NoteBean> notes = noteService.fetchNotesByPatientId(token, patientId);
         model.addAttribute("notes", notes);
         model.addAttribute("patientId", patientId);
         return "notes/list";
@@ -61,17 +51,7 @@ public class NoteController {
                                  @CookieValue(name = "token", required = false) String token,
                                  Model model) {
         try {
-            NoteBean note = webClientBuilder.build()
-                    .get()
-                    .uri("/notes/{id}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            clientResponse -> Mono.error(new NoteNotFoundException(
-                                    "Note note found for id: " + id)))
-                    .bodyToMono(NoteBean.class)
-                    .block();
-
+            NoteBean note = noteService.fetchUpdateNote(id, token);
             model.addAttribute("note", note);
             return "notes/update";
 
@@ -87,18 +67,7 @@ public class NoteController {
                              @CookieValue(name = "token", required = false) String token,
                              Model model) {
         try {
-            webClientBuilder.build()
-                    .put()
-                    .uri("/notes/{id}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .bodyValue(note)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            clientResponse -> Mono.error(new NoteNotFoundException(
-                                    "Note note found for id: " + id)))
-                    .bodyToMono(NoteBean.class)
-                    .block();
-
+            NoteBean updatedNote = noteService.updateNote(id, note, token);
             Long patientId = note.getPatientId();
             return updateModelWithPatientNotes(token, patientId, model);
 
@@ -113,17 +82,7 @@ public class NoteController {
                               @CookieValue(name = "token", required = false) String token,
                               Model model) {
 
-        PatientBean patient = webClientBuilder.build()
-                .get()
-                .uri("/patients/{id}", patientId)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(PatientBean.class)
-                .block();
-
-        NoteBean note = new NoteBean();
-        note.setPatientId(patientId);
-        note.setPatientLastName(patient.getLastName());
+        NoteBean note = noteService.showAddNote(patientId, token);
         model.addAttribute("note", note);
         return "notes/add";
     }
@@ -133,17 +92,8 @@ public class NoteController {
                                @ModelAttribute NoteBean note,
                                Model model) {
 
-        webClientBuilder.build()
-                .post()
-                .uri("/notes/validate")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .bodyValue(note)
-                .retrieve()
-                .bodyToMono(NoteBean.class)
-                .block();
-
+        noteService.validateNote(note, token);
         Long patientId = note.getPatientId();
-
         return updateModelWithPatientNotes(token, patientId, model);
     }
 
@@ -153,15 +103,8 @@ public class NoteController {
                              Model model) {
 
         try {
-            Long patientId = fetchPatientIdForNoteId(token, id);
-
-            webClientBuilder.build()
-                    .delete()
-                    .uri("/notes/{id}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .toBodilessEntity()
-                    .block();
+            Long patientId = noteService.fetchPatientIdForNoteId(token, id);
+            noteService.deleteNote(id, token);
             return updateModelWithPatientNotes(token, patientId, model);
 
         } catch (NoteNotFoundException e) {
@@ -169,17 +112,4 @@ public class NoteController {
             return "error";
         }
     }
-
-    public Long fetchPatientIdForNoteId(@CookieValue(name = "token", required = false) String token,
-                                        String id) {
-        NoteBean note = webClientBuilder.build()
-                .get()
-                .uri("/notes/{id}", id)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(NoteBean.class)
-                .block();
-        return note != null ? note.getPatientId() : null;
-    }
-
 }

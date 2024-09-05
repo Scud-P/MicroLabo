@@ -86,9 +86,9 @@ public class PatientControllerTest {
 
     @Test
     public void testGetHomeNoToken() throws Exception {
-            mockMvc.perform(get("/api/home"))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/login"));
+        mockMvc.perform(get("/api/home"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
@@ -163,12 +163,30 @@ public class PatientControllerTest {
 
     @Test
     public void testShowAddPatient() {
-        String result =  patientController.showAddPatient(model);
+        String result = patientController.showAddPatient(model);
         assertEquals("add", result);
         verify(model, times(1)).addAttribute("patient", new PatientBean());
     }
 
+    @Test
+    public void testValidatePatient() {
+        List<PatientBean> patients = List.of(firstPatient, secondPatient);
+        when(patientService.validatePatient(any(PatientBean.class), anyString())).thenReturn(firstPatient);
+        when(patientService.fetchPatients(anyString())).thenReturn(patients);
+        String result = patientController.validatePatient(firstPatient, "someValidToken", model);
+        assertEquals("home", result);
+        verify(model, times(1)).addAttribute("patients", patients);
+    }
 
+    @Test
+    public void tesDeletePatient() {
+        List<PatientBean> patients = List.of(firstPatient, secondPatient);
+        doNothing().when(patientService).deletePatientById(anyLong(), anyString());
+        when(patientService.fetchPatients(anyString())).thenReturn(patients);
+        String result = patientController.deletePatient(firstPatient.getId(), "someValidToken", model);
+        assertEquals("home", result);
+        verify(model, times(1)).addAttribute("patients", patients);
+    }
 }
 
 

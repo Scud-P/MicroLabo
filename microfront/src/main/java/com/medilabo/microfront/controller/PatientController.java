@@ -110,18 +110,8 @@ public class PatientController {
     public String validatePatient(@ModelAttribute PatientBean patient,
                                   @CookieValue(name = "token", required = false) String token,
                                   Model model) {
-        WebClient webClient = webClientBuilder.build();
         try {
-            webClient.post()
-                    .uri("/patients/validate")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .bodyValue(patient)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            clientResponse -> Mono.error(new PatientAlreadyExistsException(
-                                    "Patient can't be added because a patient with the same first name, last name and birthdate combination already exists")))
-                    .bodyToMono(PatientBean.class)
-                    .block();
+            patientService.validatePatient(patient, token);
             return updateModelWithPatients(token, model);
 
         } catch (PatientAlreadyExistsException e) {
@@ -134,18 +124,8 @@ public class PatientController {
     public String deletePatient(@PathVariable("id") Long id,
                                 @CookieValue(name = "token", required = false) String token,
                                 Model model) {
-        WebClient webClient = webClientBuilder.build();
-
         try {
-            webClient.delete()
-                    .uri("/patients/{id}", id)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError,
-                            clientResponse -> Mono.error(new PatientNotFoundException(
-                                    "Patient not found for id: " + id)))
-                    .toBodilessEntity()
-                    .block();
+            patientService.deletePatientById(id, token);
             return updateModelWithPatients(token, model);
 
         } catch (PatientNotFoundException e) {
