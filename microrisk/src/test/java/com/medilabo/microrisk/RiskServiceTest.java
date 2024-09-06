@@ -1,51 +1,54 @@
-package com.medilabo.experiment.microrisk;
+package com.medilabo.microrisk;
 
-import com.medilabo.experiment.microrisk.service.RiskService;
-import java.time.LocalDate;
-import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import com.medilabo.microrisk.service.RiskService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class RiskServiceTest {
+
     @InjectMocks
     private RiskService riskService;
 
     @Test
     public void testCalculateAge() {
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        LocalDate birthdate = LocalDate.of(2000, 1, 1);
-        Mockito.doReturn(birthdate).when(spyRiskService).fetchBirthDate(anyLong());
+        LocalDate birthdate = LocalDate.now();
+        doReturn(birthdate).when(spyRiskService).fetchBirthDate(anyLong());
         int age = spyRiskService.calculateAge(1L);
-        Assertions.assertEquals(24, age);
+        assertEquals(0, age);
     }
 
     @Test
     public void testCalculateAge_WithNullBirthdate() {
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(null).when(spyRiskService).fetchBirthDate(anyLong());
+        doReturn(null).when(spyRiskService).fetchBirthDate(anyLong());
         int age = spyRiskService.calculateAge(1L);
-        Assertions.assertEquals(0, age);
+        assertEquals(0, age);
     }
 
     @Test
     public void testGetRiskWords() {
-        List<String> expectedRiskWords = List.of("Hémoglobine A1C", "Microalbumine", "Taille", "Poids", "Fumeur", "Fumeuse", "Anormal", "Cholestérol", "Vertiges", "Rechute", "Réaction", "Anticorps");
+        List<String> expectedRiskWords = List.of("Hémoglobine A1C", "Microalbumine", "Taille", "Poids", "Fumeur", "Fumeuse", "Anormal", "Cholestérol", "Vertiges", "Vertige", "Rechute", "Réaction", "Anticorps");
         List<String> actualRiskWords = this.riskService.getRiskWords();
-        Assertions.assertEquals(expectedRiskWords, actualRiskWords);
+        assertEquals(expectedRiskWords, actualRiskWords);
     }
 
     @Test
     public void testGetExclusionWords() {
         List<String> expectedExclusionWords = List.of("Égal", "Recommandé");
         List<String> actualExclusionWords = this.riskService.getExclusionWords();
-        Assertions.assertEquals(expectedExclusionWords, actualExclusionWords);
+        assertEquals(expectedExclusionWords, actualExclusionWords);
     }
 
     @Test
@@ -54,11 +57,11 @@ public class RiskServiceTest {
         List<String> riskWords = List.of("Hémoglobine A1C", "Microalbumine", "Taille", "Poids", "Fumeur", "Fumeuse", "Anormal", "Cholestérol", "Vertiges", "Rechute", "Réaction", "Anticorps");
         List<String> exclusionWords = List.of("Égal", "Recommandé");
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(contents).when(spyRiskService).fetchContents(anyLong());
-        Mockito.doReturn(riskWords).when(spyRiskService).getRiskWords();
-        Mockito.doReturn(exclusionWords).when(spyRiskService).getExclusionWords();
+        doReturn(contents).when(spyRiskService).fetchContents(anyLong());
+        doReturn(riskWords).when(spyRiskService).getRiskWords();
+        doReturn(exclusionWords).when(spyRiskService).getExclusionWords();
         int riskWordOccurrences = spyRiskService.getRiskWordOccurrences(1L);
-        Assertions.assertEquals(2, riskWordOccurrences);
+        assertEquals(2, riskWordOccurrences);
     }
 
     @Test
@@ -67,11 +70,11 @@ public class RiskServiceTest {
         List<String> riskWords = List.of("Hémoglobine A1C", "Microalbumine", "Taille", "Poids", "Fumeur", "Fumeuse", "Anormal", "Cholestérol", "Vertiges", "Rechute", "Réaction", "Anticorps");
         List<String> exclusionWords = List.of("Égal", "Recommandé");
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(contents).when(spyRiskService).fetchContents(anyLong());
-        Mockito.doReturn(riskWords).when(spyRiskService).getRiskWords();
-        Mockito.doReturn(exclusionWords).when(spyRiskService).getExclusionWords();
+        doReturn(contents).when(spyRiskService).fetchContents(anyLong());
+        doReturn(riskWords).when(spyRiskService).getRiskWords();
+        doReturn(exclusionWords).when(spyRiskService).getExclusionWords();
         int riskWordOccurrences = spyRiskService.getRiskWordOccurrences(1L);
-        Assertions.assertEquals(1, riskWordOccurrences);
+        assertEquals(1, riskWordOccurrences);
     }
 
     @Test
@@ -80,11 +83,11 @@ public class RiskServiceTest {
         List<String> riskWords = List.of("Hémoglobine A1C", "Microalbumine", "Taille", "Poids", "Fumeur", "Fumeuse", "Anormal", "Cholestérol", "Vertiges", "Rechute", "Réaction", "Anticorps");
         List<String> exclusionWords = List.of("Égal", "Recommandé");
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(contents).when(spyRiskService).fetchContents(anyLong());
-        Mockito.doReturn(riskWords).when(spyRiskService).getRiskWords();
-        Mockito.doReturn(exclusionWords).when(spyRiskService).getExclusionWords();
+        doReturn(contents).when(spyRiskService).fetchContents(anyLong());
+        doReturn(riskWords).when(spyRiskService).getRiskWords();
+        doReturn(exclusionWords).when(spyRiskService).getExclusionWords();
         int riskWordOccurrences = spyRiskService.getRiskWordOccurrences(1L);
-        Assertions.assertEquals(1, riskWordOccurrences);
+        assertEquals(1, riskWordOccurrences);
     }
 
     @Test
@@ -93,12 +96,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 0;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "None";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -107,12 +110,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 3;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "In Danger";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -121,12 +124,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 7;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "In Danger";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -135,12 +138,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 3;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Borderline";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -149,12 +152,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 2;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "None";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -163,12 +166,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 5;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Early onset";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -177,12 +180,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 10;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Early onset";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -191,12 +194,12 @@ public class RiskServiceTest {
         String gender = "f";
         int riskWordOccurrences = 5;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "In Danger";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -205,12 +208,12 @@ public class RiskServiceTest {
         String gender = "f";
         int riskWordOccurrences = 3;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "None";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -219,12 +222,12 @@ public class RiskServiceTest {
         String gender = "f";
         int riskWordOccurrences = 8;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Early onset";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -233,12 +236,12 @@ public class RiskServiceTest {
         String gender = "f";
         int riskWordOccurrences = 7;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "In Danger";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -247,12 +250,12 @@ public class RiskServiceTest {
         String gender = "f";
         int riskWordOccurrences = 8;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Early onset";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -261,12 +264,12 @@ public class RiskServiceTest {
         String gender = "f";
         int riskWordOccurrences = 1;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Early onset";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -275,12 +278,12 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 7;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Early onset";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 
     @Test
@@ -289,11 +292,11 @@ public class RiskServiceTest {
         String gender = "m";
         int riskWordOccurrences = 10;
         RiskService spyRiskService = Mockito.spy(this.riskService);
-        Mockito.doReturn(age).when(spyRiskService).calculateAge(anyLong());
-        Mockito.doReturn(gender).when(spyRiskService).fetchGender(anyLong());
-        Mockito.doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
+        doReturn(age).when(spyRiskService).calculateAge(anyLong());
+        doReturn(gender).when(spyRiskService).fetchGender(anyLong());
+        doReturn(riskWordOccurrences).when(spyRiskService).getRiskWordOccurrences(anyLong());
         String expectedRisk = "Early onset";
         String actualRisk = spyRiskService.calculateRiskForPatient(1L);
-        Assertions.assertEquals(expectedRisk, actualRisk);
+        assertEquals(expectedRisk, actualRisk);
     }
 }

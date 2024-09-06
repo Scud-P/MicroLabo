@@ -1,7 +1,7 @@
-package com.medilabo.experiment.microrisk;
+package com.medilabo.microrisk;
 
-import com.medilabo.experiment.microrisk.controller.RiskController;
-import com.medilabo.experiment.microrisk.service.RiskService;
+import com.medilabo.microrisk.controller.RiskController;
+import com.medilabo.microrisk.service.RiskService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

@@ -1,4 +1,4 @@
-package com.medilabo.experiment.microrisk;
+package com.medilabo.microrisk;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
