@@ -66,6 +66,9 @@ public class NoteService {
                 .uri("/patients/{id}", patientId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        clientResponse -> Mono.error(new PatientNotFoundException(
+                                "Patient not found for id: " + patientId)))
                 .bodyToMono(PatientBean.class)
                 .block();
 
@@ -103,6 +106,9 @@ public class NoteService {
                 .uri("/notes/{id}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        clientResponse -> Mono.error(new NoteNotFoundException(
+                                "Note note found for id: " + id)))
                 .toBodilessEntity()
                 .block();
     }

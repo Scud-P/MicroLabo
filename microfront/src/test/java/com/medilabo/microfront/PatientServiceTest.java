@@ -1,8 +1,11 @@
 package com.medilabo.microfront;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medilabo.microfront.beans.PatientBean;
+import com.medilabo.microfront.exception.PatientAlreadyExistsException;
+import com.medilabo.microfront.exception.PatientNotFoundException;
 import com.medilabo.microfront.service.PatientService;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -23,8 +26,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,11 +47,16 @@ public class PatientServiceTest {
     @Mock
     private Model model;
 
+    private ObjectMapper mapper;
+
     private static MockWebServer gatewayMockServer;
     private static MockWebServer authMockServer;
 
     private static PatientBean firstPatient;
     private static PatientBean secondPatient;
+    private static PatientBean updatedPatient;
+
+    private String validToken;
 
     @BeforeAll
     public static void startMockServers() throws Exception {
@@ -73,13 +82,15 @@ public class PatientServiceTest {
                 (1L, "Rafael", "Doe", rafaelBirthdate, "M", "666 Devil Drive", "111-111-111");
         secondPatient = new PatientBean
                 (2L, "Thalia", "Smith", thaliaBirthDate, "F", "777 Jackpot Road", "222-222-222");
+        updatedPatient = new PatientBean
+                (1L, "Rafael", "Doe", rafaelBirthdate, "M", "666 Devil Drive", "333-333-333");
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        validToken = "someValidToken";
     }
 
     @Test
     public void testFetchPatients() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-
         String firstPatientJson = mapper.writeValueAsString(firstPatient);
         String secondPatientJson = mapper.writeValueAsString(secondPatient);
 
@@ -94,7 +105,7 @@ public class PatientServiceTest {
                 .baseUrl(gatewayMockServer.url("/").toString())
                 .build());
 
-        List<PatientBean> patients = patientService.fetchPatients("someValidToken");
+        List<PatientBean> patients = patientService.fetchPatients(validToken);
 
         assertNotNull(patients);
         assertEquals(2, patients.size());
@@ -102,4 +113,149 @@ public class PatientServiceTest {
         assertEquals("Thalia", patients.get(1).getFirstName());
     }
 
+    @Test
+    public void testFetchPatientById() throws JsonProcessingException {
+
+        String firstPatientJson = mapper.writeValueAsString(firstPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(firstPatientJson)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        PatientBean patient = patientService.fetchPatientById(firstPatient.getId(), validToken);
+
+        assertEquals(firstPatient, patient);
+    }
+
+    @Test
+    public void testFetchPatientByIdNotFound() throws JsonProcessingException {
+        String firstPatientJson = mapper.writeValueAsString(firstPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(400)
+                .setBody(firstPatientJson)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        assertThrows(PatientNotFoundException.class, () -> patientService.fetchPatientById(firstPatient.getId(), validToken));
+    }
+
+    @Test
+    public void testUpdatePatient() throws JsonProcessingException {
+
+        String updatedPatientJson = mapper.writeValueAsString(updatedPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(updatedPatientJson)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        PatientBean patient = patientService.updatePatient(1, firstPatient, validToken);
+
+        assertEquals(updatedPatient, patient);
+    }
+
+    @Test
+    public void testUpdatePatientAlreadyExists() throws JsonProcessingException {
+        String updatedPatientJson = mapper.writeValueAsString(updatedPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(409)
+                .setBody(updatedPatientJson)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        assertThrows(PatientAlreadyExistsException.class, () -> patientService.updatePatient(firstPatient.getId(), firstPatient, validToken));
+    }
+
+    @Test
+    public void testUpdatePatientNotFound() throws JsonProcessingException {
+        String updatedPatientJson = mapper.writeValueAsString(updatedPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(400)
+                .setBody(updatedPatientJson)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(firstPatient.getId(), firstPatient, validToken));
+    }
+
+    @Test
+    public void testValidatePatient() throws JsonProcessingException {
+        String addedPatient = mapper.writeValueAsString(firstPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(addedPatient)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        PatientBean patient = patientService.validatePatient(firstPatient, validToken);
+
+        assertEquals(firstPatient, patient);
+    }
+
+    @Test
+    public void testValidatePatientAlreadyExists() throws JsonProcessingException {
+        String addedPatient = mapper.writeValueAsString(firstPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(409)
+                .setBody(addedPatient)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        assertThrows(PatientAlreadyExistsException.class, () -> patientService.validatePatient(firstPatient, validToken));
+    }
+
+    @Test
+    public void testDeletePatient() {
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        patientService.deletePatientById(firstPatient.getId(), validToken);
+    }
+
+    @Test
+    public void testDeletePatientNotFound() {
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(400)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        assertThrows(PatientNotFoundException.class, () -> patientService.deletePatientById(firstPatient.getId(), validToken));
+    }
 }
