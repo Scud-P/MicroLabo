@@ -93,61 +93,61 @@ public class PatientService {
         return patientRepository.existsById(id);
     }
 
-    /**
-     * For testing purposes, we need to create Patients
-     */
+//    /**
+//     * For testing purposes, we need to create Patients
+//     */
+//
+//    @PostConstruct
+//    public void populateMockPatientTable() {
+//
+//        List<Patient> presentPatients = patientRepository.findAll();
+//
+//        if (presentPatients.isEmpty()) {
+//
+//            SimpleDateUtil simpleDateUtil = new SimpleDateUtil();
+//
+//            Patient firstPatient = new Patient();
+//            firstPatient.setLastName("TestNone");
+//            firstPatient.setFirstName("Test");
+//            firstPatient.setBirthdate(simpleDateUtil.parseDate("1966-12-31"));
+//            firstPatient.setGender("F");
+//            firstPatient.setAddress("1 Brookside St");
+//            firstPatient.setPhoneNumber("100-222-3333");
+//
+//            Patient secondPatient = new Patient();
+//            secondPatient.setLastName("TestBorderline");
+//            secondPatient.setFirstName("Test");
+//            secondPatient.setBirthdate(simpleDateUtil.parseDate("1945-06-24"));
+//            secondPatient.setGender("M");
+//            secondPatient.setAddress("2 High St");
+//            secondPatient.setPhoneNumber("200-333-4444");
+//
+//            Patient thirdPatient = new Patient();
+//            thirdPatient.setLastName("TestInDanger");
+//            thirdPatient.setFirstName("Test");
+//            thirdPatient.setBirthdate(simpleDateUtil.parseDate("2004-06-18"));
+//            thirdPatient.setGender("M");
+//            thirdPatient.setAddress("3 Club Road");
+//            thirdPatient.setPhoneNumber("300-444-5555");
+//
+//            Patient fourthPatient = new Patient();
+//            fourthPatient.setLastName("TestEarlyOnset");
+//            fourthPatient.setFirstName("Test");
+//            fourthPatient.setBirthdate(simpleDateUtil.parseDate("2002-06-28"));
+//            fourthPatient.setGender("F");
+//            fourthPatient.setAddress("4 Valley Dr");
+//            fourthPatient.setPhoneNumber("400-555-6666");
+//
+//            List<Patient> mockPatients = List.of(firstPatient, secondPatient, thirdPatient, fourthPatient);
+//            patientRepository.saveAll(mockPatients);
+//            System.out.println("DB populated");
+//        }
+//    }
 
-    @PostConstruct
-    public void populateMockPatientTable() {
-
-        List<Patient> presentPatients = patientRepository.findAll();
-
-        if (presentPatients.isEmpty()) {
-
-            SimpleDateUtil simpleDateUtil = new SimpleDateUtil();
-
-            Patient firstPatient = new Patient();
-            firstPatient.setLastName("TestNone");
-            firstPatient.setFirstName("Test");
-            firstPatient.setBirthdate(simpleDateUtil.parseDate("1966-12-31"));
-            firstPatient.setGender("F");
-            firstPatient.setAddress("1 Brookside St");
-            firstPatient.setPhoneNumber("100-222-3333");
-
-            Patient secondPatient = new Patient();
-            secondPatient.setLastName("TestBorderline");
-            secondPatient.setFirstName("Test");
-            secondPatient.setBirthdate(simpleDateUtil.parseDate("1945-06-24"));
-            secondPatient.setGender("M");
-            secondPatient.setAddress("2 High St");
-            secondPatient.setPhoneNumber("200-333-4444");
-
-            Patient thirdPatient = new Patient();
-            thirdPatient.setLastName("TestInDanger");
-            thirdPatient.setFirstName("Test");
-            thirdPatient.setBirthdate(simpleDateUtil.parseDate("2004-06-18"));
-            thirdPatient.setGender("M");
-            thirdPatient.setAddress("3 Club Road");
-            thirdPatient.setPhoneNumber("300-444-5555");
-
-            Patient fourthPatient = new Patient();
-            fourthPatient.setLastName("TestEarlyOnset");
-            fourthPatient.setFirstName("Test");
-            fourthPatient.setBirthdate(simpleDateUtil.parseDate("2002-06-28"));
-            fourthPatient.setGender("F");
-            fourthPatient.setAddress("4 Valley Dr");
-            fourthPatient.setPhoneNumber("400-555-6666");
-
-            List<Patient> mockPatients = List.of(firstPatient, secondPatient, thirdPatient, fourthPatient);
-            patientRepository.saveAll(mockPatients);
-            System.out.println("DB populated");
-        }
-    }
-
-    @PreDestroy
-    private void clearDB() {
-        patientRepository.deleteAll();
-        patientRepository.resetAutoIncrement();
-        System.out.println("DB emptied");
-    }
+//    @PreDestroy
+//    private void clearDB() {
+//        patientRepository.deleteAll();
+//        patientRepository.resetAutoIncrement();
+//        System.out.println("DB emptied");
+//    }
 }

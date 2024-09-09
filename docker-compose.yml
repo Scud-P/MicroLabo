@@ -1,0 +1,111 @@
+services:
+  gateway:
+    image: gateway:latest
+    build:
+      context: ./gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+    depends_on:
+      - microlabo
+      - microfront
+      - micronotes
+      - microrisk
+      - microauth
+
+  microlabo:
+    image: microlabo:latest
+    build:
+      context: ./microlabo
+    ports:
+      - "8081:8081"
+
+    depends_on:
+            - db
+    environment:
+      - SPRING_APPLICATION_NAME=microlabo
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/medilabo
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - my-network
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: medilabo
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - my-network
+
+  microfront:
+    image: microfront:latest
+    build:
+      context: ./microfront
+    ports:
+      - "8082:8082"
+    networks:
+      - my-network
+
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - my-network
+
+  micronotes:
+    image: micronotes:latest
+    build:
+      context: ./micronotes
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongodb
+    environment:
+      - SPRING_APPLICATION_NAME=micronotes
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/micronotes
+    networks:
+      - my-network
+
+  microrisk:
+    image: microrisk:latest
+    build:
+      context: ./microrisk
+    ports:
+      - "8084:8084"
+    networks:
+      - my-network
+
+  microauth:
+    image: microauth:latest
+    build:
+      context: ./microauth
+    ports:
+      - "8085:8085"
+
+    environment:
+      - SPRING_APPLICATION_NAME=microauth
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/medilabo
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - db
+    networks:
+      - my-network
+
+volumes:
+  mongodb_data:
+  mysql_data:
+
+networks:
+  my-network:
+    driver: bridge

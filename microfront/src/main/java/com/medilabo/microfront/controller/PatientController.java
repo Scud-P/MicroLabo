@@ -6,13 +6,11 @@ import com.medilabo.microfront.exception.PatientNotFoundException;
 import com.medilabo.microfront.service.PatientService;
 import com.medilabo.microfront.service.RiskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -91,7 +89,7 @@ public class PatientController {
         try {
             PatientBean updatedPatient = patientService.updatePatient(id, patient, token);
             model.addAttribute("patient", updatedPatient);
-            return "redirect:/api/patients/" + id;
+            return "redirect:http://localhost:8080/api/patients/" + id;
 
         } catch (PatientAlreadyExistsException | PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());

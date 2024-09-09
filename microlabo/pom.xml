@@ -8,7 +8,7 @@
 		<version>3.3.2</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.medilabo.experiment</groupId>
+	<groupId>com.medilabo</groupId>
 	<artifactId>microlabo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>microlabo</name>

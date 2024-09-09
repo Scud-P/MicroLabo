@@ -38,7 +38,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 }
 
                 // Remove the "Bearer " part if the header is present
-                if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                if (authorizationHeader.startsWith("Bearer ")) {
                     authorizationHeader = authorizationHeader.substring(7);
                 }
 
@@ -52,7 +52,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             return chain.filter(exchange);
         });
     }
-
 
     public static class Config {
     }

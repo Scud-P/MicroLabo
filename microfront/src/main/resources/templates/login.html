@@ -19,6 +19,9 @@
   <div>
     <button type="submit">Login</button>
   </div>
+  <div th:if="${errorMessage}" class="error-message">
+    <p th:text="${errorMessage}"></p>
+  </div>
 </form>
 </body>
 </html>
