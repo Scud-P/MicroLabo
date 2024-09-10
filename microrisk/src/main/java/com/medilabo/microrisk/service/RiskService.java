@@ -25,7 +25,7 @@ public class RiskService {
     public LocalDate fetchBirthDate(@PathVariable Long id) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8081/patients/{id}/birthdate", id)
+                .uri("http://microlabo:8081/patients/{id}/birthdate", id)
                 .retrieve()
                 .bodyToMono(LocalDate.class)
                 .block();
@@ -35,7 +35,7 @@ public class RiskService {
     public String fetchGender(@PathVariable Long id) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8081/patients/{id}/gender", id)
+                .uri("http://microlabo:8081/patients/{id}/gender", id)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -45,7 +45,7 @@ public class RiskService {
     public List<String> fetchContents(@PathVariable Long patientId) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8083/notes/patient/contents/{patientId}", patientId)
+                .uri("http://micronotes:8083/notes/patient/contents/{patientId}", patientId)
                 .retrieve()
                 .bodyToFlux(String.class)
                 .collectList()

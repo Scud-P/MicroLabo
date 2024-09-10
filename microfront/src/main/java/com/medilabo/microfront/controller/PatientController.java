@@ -89,7 +89,7 @@ public class PatientController {
         try {
             PatientBean updatedPatient = patientService.updatePatient(id, patient, token);
             model.addAttribute("patient", updatedPatient);
-            return "redirect:http://localhost:8080/api/patients/" + id;
+            return "redirect:http:///192.168.0.22:8080/api/patients/" + id;
 
         } catch (PatientAlreadyExistsException | PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());

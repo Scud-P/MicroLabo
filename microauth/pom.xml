@@ -11,7 +11,7 @@
 	<groupId>com.medilabo</groupId>
 	<artifactId>microauth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>AuthenticationService</name>
+	<name>microauth</name>
 	<description>Authentication Microservice for medilabo </description>
 	<url/>
 	<licenses>

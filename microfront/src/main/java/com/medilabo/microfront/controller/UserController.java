@@ -32,8 +32,6 @@ public class UserController {
         return "login";
     }
 
-    // TODO handle Bad Credentials
-
     @PostMapping("/api/login")
     public ResponseEntity<String> validateLogin(@RequestParam("username") String username,
                                               @RequestParam("password") String password,

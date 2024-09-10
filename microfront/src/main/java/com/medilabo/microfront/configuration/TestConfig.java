@@ -10,7 +10,7 @@ public class TestConfig {
     @Bean
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8080"); // Set your base URL here
+                .baseUrl("http://gateway:8080"); // Set your base URL here
     }
 
 }

@@ -15,7 +15,7 @@ public class RiskService {
     public String fetchRiskById(long id, String token) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://localhost:8080/risk/{patientId}", id)
+                .uri("http://gateway:8080/risk/{patientId}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)

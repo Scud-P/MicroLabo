@@ -19,7 +19,7 @@ public class UserService {
 
         return webClientBuilder.build()
                 .post()
-                .uri("http://microauth:8085/auth/token")
+                .uri("/auth/token")
                 .bodyValue(authRequestDto)
                 .retrieve()
                 .onStatus(
@@ -28,6 +28,4 @@ public class UserService {
                 .bodyToMono(String.class)
                 .block();
     }
-
-
 }

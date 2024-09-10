@@ -1,18 +1,14 @@
 package com.medilabo.microfront.controller;
 
 import com.medilabo.microfront.beans.NoteBean;
-import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.NoteNotFoundException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
 import com.medilabo.microfront.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
