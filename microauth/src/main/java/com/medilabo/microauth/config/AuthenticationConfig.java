@@ -28,7 +28,8 @@ public class AuthenticationConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/register", "/auth/token", "/auth/validate")
+                        .requestMatchers("/auth/register", "/auth/token", "/auth/validate",
+                                "/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll())
                 .build();
     }

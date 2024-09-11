@@ -57,8 +57,6 @@ public class PatientController {
         return ResponseEntity.noContent().build();
     }
 
-    // TODO enlever les calls spécifiques pour récupérer le Patient direct
-
     @GetMapping(value = "/{id}/birthdate")
     public ResponseEntity<LocalDate> getBirthdate(@PathVariable("id") Long id) {
         LocalDate birthdate = patientService.getBirthdateById(id);

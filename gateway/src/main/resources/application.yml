@@ -15,7 +15,7 @@ spring:
         - id: microfront
           uri: http://microfront:8082
           predicates:
-            - Path=/api/**
+            - Path=/api/**, /v3/api-docs, /swagger-ui/**
           filters:
             - AuthenticationFilter
 
@@ -46,7 +46,6 @@ spring:
             - Path=/auth/**
           filters:
             - AuthenticationFilter
-
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
