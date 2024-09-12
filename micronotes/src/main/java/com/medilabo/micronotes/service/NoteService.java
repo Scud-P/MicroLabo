@@ -17,6 +17,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Service class for managing patient notes.
+ * Provides methods to retrieve, create, update, delete, and perform operations related to patient notes
+ * from the MongoDB database through the NoteRepository.
+ */
 @Service
 public class NoteService {
 
@@ -29,12 +34,27 @@ public class NoteService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    /**
+     * Retrieves a note by its ID.
+     *
+     * @param id the ID of the note
+     * @return the retrieved Note
+     * @throws NoteNotFoundException if no note is found with the given ID
+     */
     public Note getNoteById(String id) {
         return noteRepository.findById(id).orElseThrow(
                 () -> new NoteNotFoundException("No note found for id: " + id)
         );
     }
 
+    /**
+     * Retrieves all notes associated with a specific patient ID.
+     * Checks if the patient exists by making a REST call to the patient microservice first.
+     *
+     * @param patientId the ID of the patient
+     * @return a list of Note associated with the patient
+     * @throws PatientNotFoundException if the patient is not found
+     */
     public List<Note> getNotesByPatientId(Long patientId) {
         Boolean existsPatient = webClientBuilder
                 .baseUrl("http://microlabo:8081")
@@ -51,16 +71,33 @@ public class NoteService {
         return noteRepository.findByPatientId(patientId);
     }
 
+    /**
+     * Saves a new note.
+     *
+     * @param note the note to be saved
+     * @return the saved Note
+     */
     @Transactional
     public Note saveNote(Note note) {
         return noteRepository.save(note);
     }
 
+    /**
+     * Deletes a new note.
+     *
+     * @param id the id of the note to be deleted
+     */
     @Transactional
     public void deleteNoteById(String id) {
         noteRepository.deleteById(id);
     }
 
+    /**
+     * Updates an existing note.
+     *
+     * @param note the note containing updated information
+     * @return the updated Note
+     */
     @Transactional
     public Note updateNote(Note note) {
         Note noteToUpdate = getNoteById(note.getId());
@@ -68,20 +105,42 @@ public class NoteService {
         return noteRepository.save(noteToUpdate);
     }
 
+    /**
+     * Retrieves all notes from the repository.
+     *
+     * @return a list of all Note
+     */
     public List<Note> getAllNotes() {
         return noteRepository.findAll();
     }
 
+    /**
+     * Retrieves the contents of notes associated with a specific patient ID.
+     *
+     * @param patientId the ID of the patient
+     * @return a list of note contents
+     */
     public List<String> getContentsByPatientId(long patientId) {
         return noteRepository.findContentsByPatientId(patientId);
     }
 
+    /**
+     * Retrieves all risk words from the {@link RiskWord} Enum
+     *
+     * @return a list of risk words
+     */
     public List<String> getRiskWords() {
         return Stream.of(RiskWord.values())
                 .map(RiskWord::getRiskWord)
                 .toList();
     }
 
+    /**
+     * Counts the total occurrences of risk words within a list of note contents.
+     *
+     * @param contents a list of note contents
+     * @return the total count of risk word occurrences
+     */
     public long countTotalRiskWordOccurrences(List<String> contents) {
         List<String> riskWords = getRiskWords();
         Set<String> countedRiskWords = contents.stream()
