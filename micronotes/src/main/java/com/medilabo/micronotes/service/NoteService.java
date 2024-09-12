@@ -36,9 +36,11 @@ public class NoteService {
     }
 
     public List<Note> getNotesByPatientId(Long patientId) {
-        Boolean existsPatient = webClientBuilder.build()
+        Boolean existsPatient = webClientBuilder
+                .baseUrl("http://microlabo:8081")
+                .build()
                 .get()
-                .uri("http://microlabo:8081/patients/{id}/exists", patientId)
+                .uri("/patients/{id}/exists", patientId)
                 .retrieve()
                 .bodyToMono(Boolean.class)
                 .block();

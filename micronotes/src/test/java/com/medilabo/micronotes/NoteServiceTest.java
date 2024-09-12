@@ -1,23 +1,32 @@
 package com.medilabo.micronotes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medilabo.micronotes.domain.Note;
+import com.medilabo.micronotes.exception.NoteNotFoundException;
 import com.medilabo.micronotes.repository.NoteRepository;
 import com.medilabo.micronotes.service.NoteService;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ActiveProfiles("test")
 @SpringBootTest
 public class NoteServiceTest {
 
@@ -27,9 +36,28 @@ public class NoteServiceTest {
     @MockBean
     private NoteRepository noteRepository;
 
+    @MockBean
+    private WebClient.Builder webClientBuilder;
+
+
     private static Note firstNote;
     private static Note secondNote;
     private static List<Note> notes;
+
+    private static MockWebServer mockPatientServer;
+
+
+    @BeforeAll
+    public static void startMockServers() throws Exception {
+        mockPatientServer = new MockWebServer();
+        mockPatientServer.start(8081);
+        System.out.println("Mock patient server started");
+    }
+
+    @AfterAll
+    public static void shutDown() throws Exception {
+        mockPatientServer.shutdown();
+    }
 
     @BeforeEach
     public void setUp() {
@@ -37,6 +65,7 @@ public class NoteServiceTest {
         firstNote = new Note("firstNoteId", 1L, "Kenobi", "Patient is leaning towards the dark side of the force, but also somehow has cholestérol");
         secondNote = new Note("secondNoteId", 1L, "Kenobi", "Patient admits being traumatized by killing his anormal Padawan");
         notes = List.of(firstNote, secondNote);
+        when(webClientBuilder.baseUrl(anyString())).thenReturn(webClientBuilder);
     }
 
     @Test
@@ -56,13 +85,26 @@ public class NoteServiceTest {
     @Test
     public void getNoteById_shouldReturnNull_whenNotFound() {
         when(noteRepository.findById(anyString())).thenReturn(Optional.empty());
-        Object result = noteService.getNoteById("someIdThatDoesNotExist");
-        assertNull(result);
+        assertThrows(NoteNotFoundException.class, () -> noteService.getNoteById("id"));
     }
 
     @Test
-    public void getNotesByPatientId_shouldReturnAllNotesWithTheCorrectPatientId() {
+    public void getNotesByPatientId_shouldReturnAllNotesWithTheCorrectPatientId() throws JsonProcessingException {
+
+        boolean exists = true;
+
+        mockPatientServer.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(new ObjectMapper().writeValueAsString(exists))
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build())
+                .thenReturn(WebClient.builder()
+                .baseUrl(mockPatientServer.url("/").toString())
+                .build());
+
         when(noteRepository.findByPatientId(anyLong())).thenReturn(notes);
+
         List<Note> foundNotes = noteService.getNotesByPatientId(firstNote.getPatientId());
         assertEquals(notes, foundNotes);
     }

@@ -1,4 +1,4 @@
-package com.medilabo.experiment.microlabo;
+package com.medilabo.microlabo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

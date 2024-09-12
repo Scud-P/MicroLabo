@@ -132,6 +132,7 @@ public class NoteControllerTest {
         when(noteService.fetchNotesByPatientId(anyString(), anyLong())).thenReturn(notes);
 
         String result = noteController.deleteNote("someValidToken", firstNote.getId(), model);
+
         assertEquals("notes/list", result);
         verify(model, times(1)).addAttribute("notes", notes);
         verify(model, times(1)).addAttribute("patientId", firstPatient.getId());

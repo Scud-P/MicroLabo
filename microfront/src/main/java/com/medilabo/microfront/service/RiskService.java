@@ -11,11 +11,10 @@ public class RiskService {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
-
     public String fetchRiskById(long id, String token) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://gateway:8080/risk/{patientId}", id)
+                .uri("/risk/{patientId}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)

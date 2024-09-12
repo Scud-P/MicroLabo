@@ -15,12 +15,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
+/**
+ * Service class for calculating risk levels for patients based on their age, gender, and notes.
+ * Provides methods for fetching patient data and analyzing note contents.
+ */
 @Service
 public class RiskService {
 
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+    /**
+     * Fetches the birthdate of a patient by making a REST call the patient microservice (microlabo).
+     *
+     * @param id the ID of the patient
+     * @return the birthdate of the patient
+     */
     @GetMapping("/fetchBirthdate/{id}")
     public LocalDate fetchBirthDate(@PathVariable Long id) {
         return webClientBuilder.build()
@@ -31,6 +42,12 @@ public class RiskService {
                 .block();
     }
 
+    /**
+     * Fetches the gender of a patient by making a REST call the patient microservice (microlabo).
+     *
+     * @param id the ID of the patient
+     * @return the gender of the patient
+     */
     @GetMapping("/fetchGender/{id}")
     public String fetchGender(@PathVariable Long id) {
         return webClientBuilder.build()
@@ -41,6 +58,12 @@ public class RiskService {
                 .block();
     }
 
+    /**
+     * Fetches the contents of all notes for a patient as a List of Strings by making a REST call the patient microservice (micronotes).
+     *
+     * @param patientId the ID of the patient
+     * @return a list of note contents
+     */
     @GetMapping("/fetchContents/{patientId}")
     public List<String> fetchContents(@PathVariable Long patientId) {
         return webClientBuilder.build()
@@ -52,6 +75,12 @@ public class RiskService {
                 .block();
     }
 
+    /**
+     * Calculates the age of a patient based on their birthdate.
+     *
+     * @param patientId the ID of the patient
+     * @return the age of the patient, or 0 if birthdate is not available
+     */
     public int calculateAge(Long patientId) {
         LocalDate birthDate = fetchBirthDate(patientId);
         if (birthDate == null) {
@@ -60,18 +89,37 @@ public class RiskService {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
+    /**
+     * Retrieves a list of risk words used to determine the patient's risk level.
+     *
+     * @return a list of risk words
+     */
     public List<String> getRiskWords() {
         return Stream.of(RiskWord.values())
                 .map(RiskWord::getRiskWord)
                 .toList();
     }
 
+    /**
+     * Retrieves a list of exclusion words used to filter out certain combinations
+     * from being counted as risk factors. Helps fine tune the algorithm.
+     *
+     * @return a list of exclusion words
+     */
     public List<String> getExclusionWords() {
         return Stream.of(ExclusionWord.values())
                 .map(ExclusionWord::getExclusionWord)
                 .toList();
     }
 
+
+    /**
+     * Calculates the occurrences of risk words in the patient's notes.
+     * Excludes duplicates to not alter the risk.
+     *
+     * @param patientId the ID of the patient
+     * @return the count of distinct risk words found in the patient's notes
+     */
     public int getRiskWordOccurrences(Long patientId) {
         List<String> contents = fetchContents(patientId);
         List<String> riskWords = getRiskWords();
@@ -85,6 +133,14 @@ public class RiskService {
         return countedRiskWords.size();
     }
 
+    /**
+     * Checks if a risk word should be counted, considering the exclusion words.
+     *
+     * @param content        the content to search in
+     * @param riskWord       the risk word to look for
+     * @param exclusionWords the list of exclusion words
+     * @return true if the risk word should be counted, false otherwise
+     */
     private boolean isToBeCountedRiskWord(String content, String riskWord, List<String> exclusionWords) {
         String lowerContent = content.toLowerCase();
         String lowerRiskWord = riskWord.toLowerCase();
@@ -92,6 +148,15 @@ public class RiskService {
         return lowerContent.contains(lowerRiskWord) && !isToBeExcludedRiskWord(lowerContent, lowerRiskWord, exclusionWords);
     }
 
+    /**
+     * Checks if a risk word should be excluded based on if an exclusionWord is placed
+     * directly before or after it.
+     *
+     * @param content        the content to search in
+     * @param riskWord       the risk word to look for
+     * @param exclusionWords the list of exclusion words
+     * @return true if the risk word should be excluded, false otherwise
+     */
     private boolean isToBeExcludedRiskWord(String content, String riskWord, List<String> exclusionWords) {
         String lowerContent = content.toLowerCase();
         String lowerRiskWord = riskWord.toLowerCase();
@@ -103,7 +168,12 @@ public class RiskService {
                                 lowerContent.contains(lowerRiskWord + " " + lowerExclusionWord));
     }
 
-     // Algorithm to define the risk for patients based on their age, gender and their doctor's notes
+    /**
+     * Determines the risk level for a patient based on their age, gender, and the risk words found in their notes.
+     *
+     * @param patientId the ID of the patient
+     * @return a string representing the risk level ("None", "Borderline", "In Danger", "Early onset")
+     */
     public String calculateRiskForPatient(Long patientId) {
         int age = calculateAge(patientId);
         String gender = fetchGender(patientId);
@@ -121,10 +191,9 @@ public class RiskService {
                 if (riskWordOccurrences >= 3 && riskWordOccurrences < 5) {
                     return "In Danger";
 
-                } else if(riskWordOccurrences < 3) {
+                } else if (riskWordOccurrences < 3) {
                     return "None";
-                }
-                else return "Early onset";
+                } else return "Early onset";
             }
             if (riskWordOccurrences >= 6 && riskWordOccurrences < 8) {
                 return "In Danger";
@@ -135,10 +204,9 @@ public class RiskService {
                 if (riskWordOccurrences >= 4 && riskWordOccurrences < 7) {
                     return "In Danger";
 
-                } else if(riskWordOccurrences < 4) {
+                } else if (riskWordOccurrences < 4) {
                     return "None";
-                }
-                else return "Early onset";
+                } else return "Early onset";
             }
             if (riskWordOccurrences == 7) {
                 return "In Danger";

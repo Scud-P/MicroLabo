@@ -42,6 +42,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     authorizationHeader = authorizationHeader.substring(7);
                 }
 
+
                 // Validate the token
                 try {
                     jwtUtil.validateToken(authorizationHeader);

@@ -1,4 +1,4 @@
-package com.medilabo.experiment.microlabo;
+package com.medilabo.microlabo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -64,7 +64,7 @@ public class PatientControllerTest {
 
         when(patientService.getAllPatients()).thenReturn(patients);
 
-        mockMvc.perform(get("/patients"))
+        mockMvc.perform(get("/patients/list"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -105,6 +105,7 @@ public class PatientControllerTest {
 
     @Test
     public void getPatientById_shouldThrowPatientNotFoundException_whenIdDoesNotExist() {
+        when(patientService.getPatientById(anyLong())).thenThrow(new PatientNotFoundException("That patient definitely does not exist"));
         // Only two users with ID 1 and 2 in our testing environment
         assertThrows(PatientNotFoundException.class, () -> patientController.getPatientById(0L));
     }
