@@ -82,6 +82,11 @@ services:
       context: ./microrisk
     ports:
       - "8084:8084"
+    depends_on:
+      - mongodb
+    environment:
+      - SPRING_APPLICATION_NAME=micronotes
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/micronotes
     networks:
       - my-network
 

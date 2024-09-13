@@ -30,7 +30,8 @@ public class AuthenticationConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/token", "/auth/validate",
                                 "/swagger-ui/**", "/v3/api-docs/**")
-                        .permitAll())
+                        .permitAll()
+                        .anyRequest().authenticated())
                 .build();
     }
 

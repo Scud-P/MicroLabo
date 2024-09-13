@@ -124,4 +124,5 @@ public class NoteController {
         List<String> contents =  noteService.getContentsByPatientId(patientId);
         return ResponseEntity.ok(contents);
     }
+
 }

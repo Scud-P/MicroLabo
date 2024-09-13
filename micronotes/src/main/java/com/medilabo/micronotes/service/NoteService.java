@@ -2,6 +2,7 @@ package com.medilabo.micronotes.service;
 
 import com.medilabo.micronotes.domain.Note;
 import com.medilabo.micronotes.domain.RiskWord;
+import com.medilabo.micronotes.domain.RiskWordCount;
 import com.medilabo.micronotes.exception.NoteNotFoundException;
 import com.medilabo.micronotes.exception.PatientNotFoundException;
 import com.medilabo.micronotes.repository.NoteRepository;
@@ -148,6 +149,12 @@ public class NoteService {
                         .filter(riskWord -> content.toLowerCase().contains(riskWord.toLowerCase())))
                 .collect(Collectors.toSet());
         return countedRiskWords.size();
+    }
+
+    public int getUniqueRiskWordOccurrences(Long patientId) {
+        List<String> riskWords = getRiskWords();
+        List<RiskWordCount> riskWordCounts = noteRepository.findRiskWordOccurrences(patientId, riskWords);
+        return riskWordCounts.size();
     }
 
     /**

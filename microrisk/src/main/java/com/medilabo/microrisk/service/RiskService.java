@@ -1,7 +1,10 @@
 package com.medilabo.microrisk.service;
 
 import com.medilabo.microrisk.domain.ExclusionWord;
+import com.medilabo.microrisk.domain.Note;
 import com.medilabo.microrisk.domain.RiskWord;
+import com.medilabo.microrisk.domain.RiskWordCount;
+import com.medilabo.microrisk.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +28,9 @@ public class RiskService {
 
     @Autowired
     private WebClient.Builder webClientBuilder;
+
+    @Autowired
+    private NoteRepository noteRepository;
 
     /**
      * Fetches the birthdate of a patient by making a REST call the patient microservice (microlabo).
@@ -112,34 +118,45 @@ public class RiskService {
                 .toList();
     }
 
+    /**
+     * Builds a search query string by joining the list of risk words with a space.
+     * This query is used for performing text search in MongoDB.
+     *
+     * @param riskWords the list of risk words to be joined into a search query
+     * @return a string representing the search query for MongoDB text search
+     */
+    private String buildSearchQuery(List<String> riskWords) {
+        return String.join(" ", riskWords);
+    }
 
     /**
-     * Calculates the occurrences of risk words in the patient's notes.
-     * Excludes duplicates to not alter the risk.
      *
-     * @param patientId the ID of the patient
-     * @return the count of distinct risk words found in the patient's notes
+     * Counts the occurrences of risk words in the contents of the notes of a specific patient, excluding
+     * occurrences where exclusion words are present.
+     *
+     * @param patientId the ID of the patient whose notes will be analyzed
+     * @return the count of risk words in the patient's notes after applying exclusion logic
      */
-    public int getRiskWordOccurrences(Long patientId) {
-        List<String> contents = fetchContents(patientId);
+    public long getRiskWordsOccurrences(Long patientId) {
         List<String> riskWords = getRiskWords();
+        String query = buildSearchQuery(riskWords);
         List<String> exclusionWords = getExclusionWords();
+        List<String> contents = noteRepository.findNoteContentsByContentAndPatientId(query, patientId);
 
         Set<String> countedRiskWords = contents.stream()
                 .flatMap(content -> riskWords.stream()
                         .filter(riskWord -> isToBeCountedRiskWord(content, riskWord, exclusionWords)))
                 .collect(Collectors.toSet());
-
         return countedRiskWords.size();
     }
 
     /**
-     * Checks if a risk word should be counted, considering the exclusion words.
+     * Checks if a note content contains any risk word and is not excluded by exclusion words.
      *
      * @param content        the content to search in
-     * @param riskWord       the risk word to look for
-     * @param exclusionWords the list of exclusion words
-     * @return true if the risk word should be counted, false otherwise
+     * @param riskWord       riskWord to match
+     * @param exclusionWords the list of exclusion words to consider
+     * @return true if the content contains a risk word that is not excluded, false otherwise
      */
     private boolean isToBeCountedRiskWord(String content, String riskWord, List<String> exclusionWords) {
         String lowerContent = content.toLowerCase();
@@ -149,8 +166,7 @@ public class RiskService {
     }
 
     /**
-     * Checks if a risk word should be excluded based on if an exclusionWord is placed
-     * directly before or after it.
+     * Checks if a risk word should be excluded based on the presence of exclusion words.
      *
      * @param content        the content to search in
      * @param riskWord       the risk word to look for
@@ -177,7 +193,7 @@ public class RiskService {
     public String calculateRiskForPatient(Long patientId) {
         int age = calculateAge(patientId);
         String gender = fetchGender(patientId);
-        int riskWordOccurrences = getRiskWordOccurrences(patientId);
+        long riskWordOccurrences = getRiskWordsOccurrences(patientId);
 
         if (riskWordOccurrences == 0) {
             return "None";
