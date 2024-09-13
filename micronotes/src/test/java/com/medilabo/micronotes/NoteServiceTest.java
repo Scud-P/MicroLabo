@@ -21,9 +21,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
@@ -51,7 +51,6 @@ public class NoteServiceTest {
     public static void startMockServers() throws Exception {
         mockPatientServer = new MockWebServer();
         mockPatientServer.start(8081);
-        System.out.println("Mock patient server started");
     }
 
     @AfterAll
@@ -100,8 +99,8 @@ public class NoteServiceTest {
 
         when(webClientBuilder.build())
                 .thenReturn(WebClient.builder()
-                .baseUrl(mockPatientServer.url("/").toString())
-                .build());
+                        .baseUrl(mockPatientServer.url("/").toString())
+                        .build());
 
         when(noteRepository.findByPatientId(anyLong())).thenReturn(notes);
 
@@ -142,53 +141,4 @@ public class NoteServiceTest {
         verify(noteRepository, times(1)).save(any(Note.class));
     }
 
-    @Test
-    public void getContentsByPatientId_ShouldReturnTheCompleteContents() {
-        List<String> contents = List.of(firstNote.getContent(), secondNote.getContent());
-        when(noteRepository.findContentsByPatientId(1L)).thenReturn(contents);
-
-        List<String> foundContents = noteService.getContentsByPatientId(1L);
-
-        assertEquals(contents, foundContents);
-    }
-
-    @Test
-    public void getRiskWords_shouldReturnTheContentsOfOurEnum_asAListOfStrings() {
-
-        List<String> expectedRiskWords = List.of("Hémoglobine A1C", "Microalbumine", "Taille", "Poids", "Fumeur", "Fumeuse",
-                "Anormal", "Cholestérol", "Vertiges", "Rechute", "Réaction", "Anticorps");
-
-        List<String> foundRiskWords = noteService.getRiskWords();
-        assertEquals(expectedRiskWords, foundRiskWords);
-    }
-
-    @Test
-    public void countTotalRiskWordOccurrences_shouldReturnTheCorrectAmountOfRiskWords_inAListOfStrings() {
-        List<String> contents = List.of(firstNote.getContent(), secondNote.getContent());
-
-        long result = noteService.countTotalRiskWordOccurrences(contents);
-
-        assertEquals(2, result);
-    }
-
-    @Test
-    public void countTotalRiskWordOccurrences_shouldReturnTheCorrectAmountOfRiskWords_inAListOfStringsWithWrongCase() {
-        String content1 = firstNote.getContent().toUpperCase();
-        String content2 = secondNote.getContent().toUpperCase();
-
-        List<String> contents = List.of(content1, content2);
-
-        long result = noteService.countTotalRiskWordOccurrences(contents);
-
-        assertEquals(2, result);
-    }
-
-    @Test
-    public void countTotalRiskWordOccurrences_shouldReturnTheCorrectAmountOfRiskWords_andAvoidCountingDuplicates() {
-        List<String> contents = List.of(firstNote.getContent(), secondNote.getContent(), firstNote.getContent(), secondNote.getContent());
-
-        long result = noteService.countTotalRiskWordOccurrences(contents);
-
-        assertEquals(2, result);
-    }
 }

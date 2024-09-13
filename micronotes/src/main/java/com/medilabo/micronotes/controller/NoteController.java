@@ -1,12 +1,11 @@
 package com.medilabo.micronotes.controller;
 
+import com.medilabo.micronotes.domain.Note;
 import com.medilabo.micronotes.exception.NoteNotFoundException;
 import com.medilabo.micronotes.service.NoteService;
-import com.medilabo.micronotes.domain.Note;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -55,7 +54,7 @@ public class NoteController {
     @PostMapping("/validate")
     public ResponseEntity<Note> createNote(@Valid @RequestBody Note note) {
         Note addedNote = noteService.saveNote(note);
-        if(Objects.isNull(addedNote)) {
+        if (Objects.isNull(addedNote)) {
             return ResponseEntity.noContent().build();
         }
 
@@ -76,9 +75,9 @@ public class NoteController {
      * @throws NoteNotFoundException if the note with the given ID is not found
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteNoteById(@PathVariable ("id") String id) {
+    public ResponseEntity<Void> deleteNoteById(@PathVariable("id") String id) {
         Note note = noteService.getNoteById(id);
-        if(note == null) throw new NoteNotFoundException("Note with id: " + id + " not found.");
+        if (note == null) throw new NoteNotFoundException("Note with id: " + id + " not found.");
         noteService.deleteNoteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -86,13 +85,13 @@ public class NoteController {
     /**
      * Updates an existing note.
      *
-     * @param id the ID of the note to update
+     * @param id   the ID of the note to update
      * @param note the Note with updated information
      * @return a ResponseEntity with the updated note
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<Note> updateNote(@PathVariable("id") String id, @RequestBody Note note) {
-        if(!id.equals(note.getId())) {
+        if (!id.equals(note.getId())) {
             return ResponseEntity.badRequest().build();
         }
         Note updatedNote = noteService.updateNote(note);
@@ -109,20 +108,8 @@ public class NoteController {
     @GetMapping("/{id}")
     public Note getNoteById(@PathVariable("id") String id) {
         Note note = noteService.getNoteById(id);
-        if(note == null) throw new NoteNotFoundException("Note with id: " + id + " not found.");
+        if (note == null) throw new NoteNotFoundException("Note with id: " + id + " not found.");
         return note;
-    }
-
-    /**
-     * Retrieves the contents of notes associated with a specific patient ID.
-     *
-     * @param patientId the ID of the patient
-     * @return a ResponseEntity containing a list of note contents
-     */
-    @GetMapping("/patient/contents/{patientId}")
-    public ResponseEntity<List<String>> getContentsForPatient(@PathVariable("patientId") long patientId) {
-        List<String> contents =  noteService.getContentsByPatientId(patientId);
-        return ResponseEntity.ok(contents);
     }
 
 }

@@ -1,9 +1,7 @@
 package com.medilabo.microrisk.service;
 
 import com.medilabo.microrisk.domain.ExclusionWord;
-import com.medilabo.microrisk.domain.Note;
 import com.medilabo.microrisk.domain.RiskWord;
-import com.medilabo.microrisk.domain.RiskWordCount;
 import com.medilabo.microrisk.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,23 +63,6 @@ public class RiskService {
     }
 
     /**
-     * Fetches the contents of all notes for a patient as a List of Strings by making a REST call the patient microservice (micronotes).
-     *
-     * @param patientId the ID of the patient
-     * @return a list of note contents
-     */
-    @GetMapping("/fetchContents/{patientId}")
-    public List<String> fetchContents(@PathVariable Long patientId) {
-        return webClientBuilder.build()
-                .get()
-                .uri("http://micronotes:8083/notes/patient/contents/{patientId}", patientId)
-                .retrieve()
-                .bodyToFlux(String.class)
-                .collectList()
-                .block();
-    }
-
-    /**
      * Calculates the age of a patient based on their birthdate.
      *
      * @param patientId the ID of the patient
@@ -130,7 +111,6 @@ public class RiskService {
     }
 
     /**
-     *
      * Counts the occurrences of risk words in the contents of the notes of a specific patient, excluding
      * occurrences where exclusion words are present.
      *

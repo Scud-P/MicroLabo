@@ -21,10 +21,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(NoteController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -169,29 +167,13 @@ public class NoteControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    public void getRequest_toGetContentsForPatient_shouldReturnTheNotesContents_asAListOfString() throws Exception {
-
-        List<String> expectedContents = List.of(
-                firstNote.getContent(),
-                secondNote.getContent()
-        );
-
-        when(noteService.getContentsByPatientId(anyLong())).thenReturn(expectedContents);
-
-        mockMvc.perform(get("/notes/patient/contents/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[\"" + firstNote.getContent() + "\",\"" + secondNote.getContent() + "\"]"));
-    }
-
-
     // Utility method for MockMvc testing
 
     public static String asJsonString(final Object object) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.writeValueAsString(object);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
