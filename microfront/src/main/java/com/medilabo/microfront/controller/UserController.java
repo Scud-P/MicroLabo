@@ -9,7 +9,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,8 +101,7 @@ public class UserController {
             })
     @PostMapping("/api/login")
     public ResponseEntity<String> validateLogin(@RequestParam("username") String username,
-                                                @RequestParam("password") String password,
-                                                Model model) {
+                                                @RequestParam("password") String password) {
         try {
             String token = userService.getToken(username, password);
 

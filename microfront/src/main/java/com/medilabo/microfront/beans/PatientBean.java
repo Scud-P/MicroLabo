@@ -12,13 +12,10 @@ public class PatientBean {
     private long id;
     private String firstName;
     private String lastName;
+    @Getter
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
     private String gender;
     private String address;
     private String phoneNumber;
-
-    public LocalDate getBirthdate() {
-        return birthdate;
-    }
 }

@@ -11,11 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NoteBean {
-
     @Id
     private String id;
     private Long patientId;
     private String patientLastName;
     private String content;
-
 }

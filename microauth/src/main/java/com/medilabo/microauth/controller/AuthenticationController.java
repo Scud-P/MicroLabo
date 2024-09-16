@@ -27,11 +27,11 @@ public class AuthenticationController {
 
     @PostMapping("/token")
     public String getToken(@RequestBody AuthRequestDto authRequestDto) {
-       Authentication userAuthentication = authenticationManager.authenticate(
+        Authentication userAuthentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequestDto.getUsername(),
                         authRequestDto.getPassword()));
-        if(userAuthentication.isAuthenticated()) {
+        if (userAuthentication.isAuthenticated()) {
             return authenticationService.generateToken(authRequestDto.getUsername());
 
         } else {

@@ -12,12 +12,23 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+/**
+ * Service class for managing patients and interacting with external services using WebClient.
+ * Provides methods to fetch, update, validate, and delete patients, handling common exceptions
+ * such as patient not found and patient already exists.
+ */
 @Service
 public class PatientService {
 
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+    /**
+     * Fetches a list of all patients.
+     *
+     * @param token Authorization token for the request.
+     * @return List of {@link PatientBean} objects representing the patients.
+     */
     public List<PatientBean> fetchPatients(String token) {
         return webClientBuilder.build()
                 .get()
@@ -29,6 +40,14 @@ public class PatientService {
                 .block();
     }
 
+    /**
+     * Fetches a patient by their ID.
+     *
+     * @param id The ID of the patient to be fetched.
+     * @param token Authorization token for the request.
+     * @return The {@link PatientBean} object for the specified patient.
+     * @throws PatientNotFoundException if the patient is not found.
+     */
     public PatientBean fetchPatientById(long id, String token) {
         return webClientBuilder.build()
                 .get()
@@ -41,6 +60,16 @@ public class PatientService {
                 .block();
     }
 
+    /**
+     * Updates the details of an existing patient by their ID.
+     *
+     * @param id The ID of the patient to be updated.
+     * @param patient The {@link PatientBean} object containing the updated details.
+     * @param token Authorization token for the request.
+     * @return The updated {@link PatientBean} object.
+     * @throws PatientNotFoundException if the patient is not found.
+     * @throws PatientAlreadyExistsException if a patient with the same name and birthdate already exists.
+     */
     public PatientBean updatePatient(long id, PatientBean patient, String token) {
         return webClientBuilder.build()
                 .put()
@@ -61,6 +90,14 @@ public class PatientService {
                 .block();
     }
 
+    /**
+     * Validates and adds a new patient if they don't already exist.
+     *
+     * @param patient The {@link PatientBean} object to be validated.
+     * @param token Authorization token for the request.
+     * @return The validated {@link PatientBean} object.
+     * @throws PatientAlreadyExistsException if a patient with the same name and birthdate already exists.
+     */
     public PatientBean validatePatient(PatientBean patient, String token) {
         return webClientBuilder.build()
                 .post()
@@ -75,6 +112,13 @@ public class PatientService {
                 .block();
     }
 
+    /**
+     * Deletes a patient by their ID.
+     *
+     * @param id The ID of the patient to be deleted.
+     * @param token Authorization token for the request.
+     * @throws PatientNotFoundException if the patient is not found.
+     */
     public void deletePatientById(Long id, String token) {
         webClientBuilder.build()
                 .delete()
