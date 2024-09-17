@@ -1,9 +1,5 @@
 # OpenClassrooms - Parcours de développeur d'applications Java - Projet 9
 
-## Solution choisie
-
-### Architecture Microservices
-
 ### Langages de programmation
 
 * Backend: Java 17
@@ -21,7 +17,12 @@
 |       Testing report        |           Surefire           |
 
 
-## MicroServices
+## Architecture Microservices
+
+### Diagramme
+
+![](C:\Formation\Projet9Ressources\ComponentDiagram.png)
+
 
 ### gateway
 
