@@ -21,8 +21,7 @@
 
 ### Diagramme
 
-![](C:\Formation\Projet9Ressources\ComponentDiagram.png)
-
+![Diagramme](https://i.imgur.com/XWkGunQ.png)
 
 ### gateway
 
