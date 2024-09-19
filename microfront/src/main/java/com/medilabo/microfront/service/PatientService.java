@@ -3,7 +3,6 @@ package com.medilabo.microfront.service;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
-import com.medilabo.microfront.exception.UnauthorizedAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,6 @@ public class PatientService {
      *
      * @param token Authorization token for the request.
      * @return List of {@link PatientBean} objects representing the patients.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public List<PatientBean> fetchPatients(String token) {
         return webClientBuilder.build()
@@ -38,8 +36,6 @@ public class PatientService {
                 .uri("/patients/list")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .bodyToFlux(PatientBean.class)
                 .collectList()
                 .block();
@@ -52,7 +48,6 @@ public class PatientService {
      * @param token Authorization token for the request.
      * @return The {@link PatientBean} object for the specified patient.
      * @throws PatientNotFoundException if the patient is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public PatientBean fetchPatientById(long id, String token) {
         return webClientBuilder.build()
@@ -60,8 +55,6 @@ public class PatientService {
                 .uri("/patients/{id}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new PatientNotFoundException("Patient not found for id: " + id)))
                 .bodyToMono(PatientBean.class)
@@ -77,7 +70,6 @@ public class PatientService {
      * @return The updated {@link PatientBean} object.
      * @throws PatientNotFoundException if the patient is not found.
      * @throws PatientAlreadyExistsException if a patient with the same name and birthdate already exists.
-     *@throws UnauthorizedAccessException if no valid token is found.
      */
     public PatientBean updatePatient(long id, PatientBean patient, String token) {
         return webClientBuilder.build()
@@ -91,10 +83,8 @@ public class PatientService {
                             if (clientResponse.statusCode() == HttpStatusCode.valueOf(409)) {
                                 return Mono.error(new PatientAlreadyExistsException(
                                         "Patient can't be updated because a patient with the same first name, last name and birthdate combination already exists"));
-                            } else if (clientResponse.statusCode() == HttpStatusCode.valueOf(404)) {
-                                return Mono.error(new PatientNotFoundException("Patient not found for id: " + id));
                             } else {
-                                return Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token"));
+                                return Mono.error(new PatientNotFoundException("Patient not found for id: " + id));
                             }
                         })
                 .bodyToMono(PatientBean.class)
@@ -108,7 +98,6 @@ public class PatientService {
      * @param token Authorization token for the request.
      * @return The validated {@link PatientBean} object.
      * @throws PatientAlreadyExistsException if a patient with the same name and birthdate already exists.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public PatientBean validatePatient(PatientBean patient, String token) {
         return webClientBuilder.build()
@@ -117,8 +106,6 @@ public class PatientService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(patient)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new PatientAlreadyExistsException(
                                 "Patient can't be added because a patient with the same first name, last name and birthdate combination already exists")))
@@ -132,7 +119,6 @@ public class PatientService {
      * @param id The ID of the patient to be deleted.
      * @param token Authorization token for the request.
      * @throws PatientNotFoundException if the patient is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public void deletePatientById(long id, String token) {
         webClientBuilder.build()
@@ -140,8 +126,6 @@ public class PatientService {
                 .uri("/patients/{id}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new PatientNotFoundException(
                                 "Patient not found for id: " + id)))

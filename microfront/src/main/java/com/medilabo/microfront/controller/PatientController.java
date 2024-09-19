@@ -4,7 +4,6 @@ import com.medilabo.microfront.beans.NoteBean;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
-import com.medilabo.microfront.exception.UnauthorizedAccessException;
 import com.medilabo.microfront.service.PatientService;
 import com.medilabo.microfront.service.RiskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -120,10 +119,6 @@ public class PatientController {
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
-
-        } catch (UnauthorizedAccessException ex) {
-            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
-            return "error";
         }
     }
 
@@ -165,10 +160,6 @@ public class PatientController {
 
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error";
-
-        } catch (UnauthorizedAccessException ex) {
-            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
             return "error";
         }
     }
@@ -220,10 +211,6 @@ public class PatientController {
 
         } catch (PatientAlreadyExistsException | PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error";
-
-        } catch (UnauthorizedAccessException ex) {
-            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
             return "error";
         }
     }
@@ -290,10 +277,6 @@ public class PatientController {
         } catch (PatientAlreadyExistsException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
-
-        } catch (UnauthorizedAccessException ex) {
-            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
-            return "error";
         }
     }
 
@@ -334,10 +317,6 @@ public class PatientController {
 
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error";
-
-        } catch (UnauthorizedAccessException ex) {
-            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
             return "error";
         }
     }

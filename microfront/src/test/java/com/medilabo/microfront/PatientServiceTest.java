@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
-import com.medilabo.microfront.exception.UnauthorizedAccessException;
 import com.medilabo.microfront.service.PatientService;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -199,21 +198,6 @@ public class PatientServiceTest {
         assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(firstPatient.getId(), firstPatient, validToken));
     }
 
-    @Test
-    public void testUpdatePatientUnauthorized() throws JsonProcessingException {
-        String updatedPatientJson = mapper.writeValueAsString(updatedPatient);
-
-        gatewayMockServer.enqueue(new MockResponse()
-                .setResponseCode(401)
-                .setBody(updatedPatientJson)
-                .addHeader("Content-Type", "application/json"));
-
-        when(webClientBuilder.build()).thenReturn(WebClient.builder()
-                .baseUrl(gatewayMockServer.url("/").toString())
-                .build());
-
-        assertThrows(UnauthorizedAccessException.class, () -> patientService.updatePatient(firstPatient.getId(), firstPatient, validToken));
-    }
 
     @Test
     public void testValidatePatient() throws JsonProcessingException {

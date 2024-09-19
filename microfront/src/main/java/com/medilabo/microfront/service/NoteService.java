@@ -4,10 +4,8 @@ import com.medilabo.microfront.beans.NoteBean;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.NoteNotFoundException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
-import com.medilabo.microfront.exception.UnauthorizedAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -33,7 +31,6 @@ public class NoteService {
      * @param patientId The ID of the patient whose notes are being fetched.
      * @return List of {@link NoteBean} objects for the specified patient.
      * @throws PatientNotFoundException    if the patient is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public List<NoteBean> fetchNotesByPatientId(String token, Long patientId) {
         return webClientBuilder.build()
@@ -41,8 +38,6 @@ public class NoteService {
                 .uri("/notes/patient/{patientId}", patientId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new PatientNotFoundException(
                                 "Patient not found for id: " + patientId)))
@@ -58,7 +53,6 @@ public class NoteService {
      * @param token Authorization token for the request.
      * @return The {@link NoteBean} object for the specified note.
      * @throws NoteNotFoundException       if the note is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public NoteBean fetchUpdateNote(String id, String token) {
         return webClientBuilder.build()
@@ -66,8 +60,6 @@ public class NoteService {
                 .uri("/notes/{id}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new NoteNotFoundException(
                                 "Note note found for id: " + id)))
@@ -83,7 +75,6 @@ public class NoteService {
      * @param token Authorization token for the request.
      * @return The updated {@link NoteBean} object.
      * @throws NoteNotFoundException       if the note is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public NoteBean updateNote(String id, NoteBean note, String token) {
         return webClientBuilder.build()
@@ -92,8 +83,6 @@ public class NoteService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(note)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new NoteNotFoundException(
                                 "Note note found for id: " + id)))
@@ -108,7 +97,6 @@ public class NoteService {
      * @param token     Authorization token for the request.
      * @return A new {@link NoteBean} object initialized with the patient's data.
      * @throws PatientNotFoundException    if the patient is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public NoteBean showAddNote(Long patientId, String token) {
         PatientBean patient = webClientBuilder.build()
@@ -116,8 +104,6 @@ public class NoteService {
                 .uri("/patients/{id}", patientId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new PatientNotFoundException(
                                 "Patient not found for id: " + patientId)))
@@ -136,7 +122,6 @@ public class NoteService {
      * @param note  The {@link NoteBean} object to be validated.
      * @param token Authorization token for the request.
      * @return The validated {@link NoteBean} object.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public NoteBean validateNote(NoteBean note, String token) {
         return webClientBuilder.build()
@@ -145,8 +130,6 @@ public class NoteService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(note)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .bodyToMono(NoteBean.class)
                 .block();
     }
@@ -157,7 +140,6 @@ public class NoteService {
      * @param token Authorization token for the request.
      * @param id    The ID of the note for which the patient ID is being fetched.
      * @return The patient ID associated with the note, or null if the note is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public Long fetchPatientIdForNoteId(String token, String id) {
         NoteBean note = webClientBuilder.build()
@@ -165,8 +147,6 @@ public class NoteService {
                 .uri("/notes/{id}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .bodyToMono(NoteBean.class)
                 .block();
         return note != null ? note.getPatientId() : null;
@@ -178,7 +158,6 @@ public class NoteService {
      * @param id    The ID of the note to be deleted.
      * @param token Authorization token for the request.
      * @throws NoteNotFoundException if the note is not found.
-     * @throws UnauthorizedAccessException if no valid token is found.
      */
     public void deleteNote(String id, String token) {
         webClientBuilder.build()
@@ -186,8 +165,6 @@ public class NoteService {
                 .uri("/notes/{id}", id)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .onStatus(HttpStatus.UNAUTHORIZED::equals,
-                        clientResponse -> Mono.error(new UnauthorizedAccessException("Unauthorized access, could not find a valid token")))
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new NoteNotFoundException(
                                 "Note note found for id: " + id)))
