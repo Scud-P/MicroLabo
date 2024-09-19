@@ -53,7 +53,7 @@ public class NoteService {
      */
     public List<Note> getNotesByPatientId(Long patientId) {
         Boolean existsPatient = webClientBuilder
-                .baseUrl("http://microlabo:8081")
+                .baseUrl("http://gateway:8080")
                 .build()
                 .get()
                 .uri("/patients/{id}/exists", patientId)

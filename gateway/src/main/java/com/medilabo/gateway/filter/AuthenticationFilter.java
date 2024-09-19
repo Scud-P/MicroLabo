@@ -61,9 +61,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private Mono<Void> redirectToErrorPage(ServerWebExchange exchange, String errorMessage) {
         exchange.getResponse().setStatusCode(HttpStatus.SEE_OTHER);
         HttpHeaders headers = exchange.getResponse().getHeaders();
-//        this one works but does not load webjars css trying relative paths tomorrow
-//        also can I pass the errorMessage somehow, or make dedicated /unauthorized template with login redirect? Looks easier.
-//        headers.setLocation(URI.create("http://192.168.0.22:8080/api/error"));
         String redirectUrl = "/api/login?error=" + UriUtils.encode(errorMessage, StandardCharsets.UTF_8);
         headers.setLocation(URI.create(redirectUrl));
         return exchange.getResponse().setComplete();

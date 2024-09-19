@@ -30,6 +30,9 @@ public class RiskService {
     @Autowired
     private NoteRepository noteRepository;
 
+    //TODO DOUBLE CHECK THAT THIS WORKS LIVE
+
+
     /**
      * Fetches the birthdate of a patient by making a REST call the patient microservice (microlabo).
      *
@@ -40,7 +43,7 @@ public class RiskService {
     public LocalDate fetchBirthDate(@PathVariable Long id) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://microlabo:8081/patients/{id}/birthdate", id)
+                .uri("http://gateway:8080/patients/{id}/birthdate", id)
                 .retrieve()
                 .bodyToMono(LocalDate.class)
                 .block();
@@ -56,7 +59,7 @@ public class RiskService {
     public String fetchGender(@PathVariable Long id) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://microlabo:8081/patients/{id}/gender", id)
+                .uri("http://gateway:8080/patients/{id}/gender", id)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();

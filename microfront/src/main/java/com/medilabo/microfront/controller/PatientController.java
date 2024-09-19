@@ -1,6 +1,5 @@
 package com.medilabo.microfront.controller;
 
-import com.medilabo.microfront.beans.NoteBean;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
@@ -13,12 +12,16 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 
 
+import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -198,20 +201,21 @@ public class PatientController {
                                     mediaType = "text/html"
                             ))
             })
-    public String updatePatient(@PathVariable("id") long id,
-                                @ModelAttribute PatientBean patient,
-                                Model model,
-                                @CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<String> updatePatient(@PathVariable("id") long id,
+                                                @ModelAttribute PatientBean patient,
+                                                Model model,
+                                                @CookieValue(value = "token", required = false) String token) {
         try {
             PatientBean updatedPatient = patientService.updatePatient(id, patient, token);
             model.addAttribute("patient", updatedPatient);
-
-            // TODO TRY REDIRECTING TO redirect:http://gateway/api/patients/" + id
-            return "redirect:http://192.168.0.22:8080/api/patients/" + id;
+            String redirectUrl = "/api/patients/" + id;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setLocation(URI.create(redirectUrl));
+            return new ResponseEntity<>(headers, HttpStatus.FOUND);
 
         } catch (PatientAlreadyExistsException | PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "error";
+            return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
         }
     }
 

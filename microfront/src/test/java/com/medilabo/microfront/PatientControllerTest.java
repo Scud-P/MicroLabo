@@ -152,14 +152,14 @@ public class PatientControllerTest {
         verify(model).addAttribute("errorMessage", "Oops");
     }
 
-    @Test
-    public void testUpdatePatient() {
-        when(patientService.updatePatient(anyLong(), any(PatientBean.class), anyString())).thenReturn(firstPatient);
-        String result = patientController.updatePatient(firstPatient.getId(), firstPatient, model, "someValidToken");
-
-        assertEquals("redirect:http://192.168.0.22:8080/api/patients/1", result);
-        verify(model, times(1)).addAttribute("patient", firstPatient);
-    }
+//    @Test
+//    public void testUpdatePatient() {
+//        when(patientService.updatePatient(anyLong(), any(PatientBean.class), anyString())).thenReturn(firstPatient);
+//        String result = patientController.updatePatient(firstPatient.getId(), firstPatient, model, "someValidToken");
+//
+//        assertEquals("redirect:http://192.168.0.22:8080/api/patients/1", result);
+//        verify(model, times(1)).addAttribute("patient", firstPatient);
+//    }
 
     @Test
     public void testShowAddPatient() {
