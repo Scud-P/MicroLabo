@@ -3,6 +3,7 @@ package com.medilabo.microfront.controller;
 import com.medilabo.microfront.beans.NoteBean;
 import com.medilabo.microfront.exception.NoteNotFoundException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
+import com.medilabo.microfront.exception.UnauthorizedAccessException;
 import com.medilabo.microfront.service.NoteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -62,6 +63,10 @@ public class NoteController {
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
+            return "error";
         }
     }
 
@@ -106,6 +111,10 @@ public class NoteController {
         } catch (NoteNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
+            return "error";
         }
     }
 
@@ -144,6 +153,9 @@ public class NoteController {
         } catch (NoteNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
+        } catch (UnauthorizedAccessException ex) {  // Catching a second exception type
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
+            return "error";
         }
     }
 
@@ -172,10 +184,15 @@ public class NoteController {
     public String showAddNote(@PathVariable("patientId") Long patientId,
                               @CookieValue(name = "token", required = false) String token,
                               Model model) {
+        try {
+            NoteBean note = noteService.showAddNote(patientId, token);
+            model.addAttribute("note", note);
+            return "notes/add";
 
-        NoteBean note = noteService.showAddNote(patientId, token);
-        model.addAttribute("note", note);
-        return "notes/add";
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
+            return "error";
+        }
     }
 
     @Operation(summary = "Validates a new note",
@@ -196,10 +213,15 @@ public class NoteController {
     public String validateNote(@CookieValue(name = "token", required = false) String token,
                                @ModelAttribute NoteBean note,
                                Model model) {
+        try {
+            noteService.validateNote(note, token);
+            Long patientId = note.getPatientId();
+            return updateModelWithPatientNotes(token, patientId, model);
 
-        noteService.validateNote(note, token);
-        Long patientId = note.getPatientId();
-        return updateModelWithPatientNotes(token, patientId, model);
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
+            return "error";
+        }
     }
 
     @Operation(summary = "Deletes a note",
@@ -231,6 +253,10 @@ public class NoteController {
 
         } catch (NoteNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
             return "error";
         }
     }

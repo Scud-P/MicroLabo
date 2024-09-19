@@ -157,7 +157,7 @@ public class PatientControllerTest {
         when(patientService.updatePatient(anyLong(), any(PatientBean.class), anyString())).thenReturn(firstPatient);
         String result = patientController.updatePatient(firstPatient.getId(), firstPatient, model, "someValidToken");
 
-        assertEquals("redirect:http:///192.168.0.22:8080/api/patients/1", result);
+        assertEquals("redirect:http://192.168.0.22:8080/api/patients/1", result);
         verify(model, times(1)).addAttribute("patient", firstPatient);
     }
 

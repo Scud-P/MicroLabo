@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
+import com.medilabo.microfront.exception.UnauthorizedAccessException;
 import com.medilabo.microfront.service.PatientService;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -27,8 +28,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
+
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -188,7 +188,7 @@ public class PatientServiceTest {
         String updatedPatientJson = mapper.writeValueAsString(updatedPatient);
 
         gatewayMockServer.enqueue(new MockResponse()
-                .setResponseCode(400)
+                .setResponseCode(404)
                 .setBody(updatedPatientJson)
                 .addHeader("Content-Type", "application/json"));
 
@@ -197,6 +197,22 @@ public class PatientServiceTest {
                 .build());
 
         assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(firstPatient.getId(), firstPatient, validToken));
+    }
+
+    @Test
+    public void testUpdatePatientUnauthorized() throws JsonProcessingException {
+        String updatedPatientJson = mapper.writeValueAsString(updatedPatient);
+
+        gatewayMockServer.enqueue(new MockResponse()
+                .setResponseCode(401)
+                .setBody(updatedPatientJson)
+                .addHeader("Content-Type", "application/json"));
+
+        when(webClientBuilder.build()).thenReturn(WebClient.builder()
+                .baseUrl(gatewayMockServer.url("/").toString())
+                .build());
+
+        assertThrows(UnauthorizedAccessException.class, () -> patientService.updatePatient(firstPatient.getId(), firstPatient, validToken));
     }
 
     @Test

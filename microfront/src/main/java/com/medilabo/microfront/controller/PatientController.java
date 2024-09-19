@@ -4,6 +4,7 @@ import com.medilabo.microfront.beans.NoteBean;
 import com.medilabo.microfront.beans.PatientBean;
 import com.medilabo.microfront.exception.PatientAlreadyExistsException;
 import com.medilabo.microfront.exception.PatientNotFoundException;
+import com.medilabo.microfront.exception.UnauthorizedAccessException;
 import com.medilabo.microfront.service.PatientService;
 import com.medilabo.microfront.service.RiskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +13,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -120,6 +120,10 @@ public class PatientController {
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
+            return "error";
         }
     }
 
@@ -161,6 +165,10 @@ public class PatientController {
 
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
             return "error";
         }
     }
@@ -206,10 +214,16 @@ public class PatientController {
         try {
             PatientBean updatedPatient = patientService.updatePatient(id, patient, token);
             model.addAttribute("patient", updatedPatient);
-            return "redirect:http:///192.168.0.22:8080/api/patients/" + id;
+
+            // TODO TRY REDIRECTING TO redirect:http://gateway/api/patients/" + id
+            return "redirect:http://192.168.0.22:8080/api/patients/" + id;
 
         } catch (PatientAlreadyExistsException | PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
             return "error";
         }
     }
@@ -276,6 +290,10 @@ public class PatientController {
         } catch (PatientAlreadyExistsException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
+            return "error";
         }
     }
 
@@ -316,6 +334,10 @@ public class PatientController {
 
         } catch (PatientNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "error";
+
+        } catch (UnauthorizedAccessException ex) {
+            model.addAttribute("errorMessage", "Unauthorized access: " + ex.getMessage());
             return "error";
         }
     }

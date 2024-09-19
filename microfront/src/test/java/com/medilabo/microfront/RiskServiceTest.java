@@ -47,8 +47,6 @@ public class RiskServiceTest {
         authMockServer.shutdown();
     }
 
-    //TODO CHECK IF THIS STILL WORKS IRL
-
     @Test
     public void testFetchRiskById() {
         String risk = "This has to be the hugest risk of the history of risks";

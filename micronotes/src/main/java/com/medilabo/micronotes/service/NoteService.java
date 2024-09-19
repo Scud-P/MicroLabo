@@ -109,6 +109,4 @@ public class NoteService {
     public List<Note> getAllNotes() {
         return noteRepository.findAll();
     }
-
-
 }

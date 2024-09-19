@@ -74,4 +74,11 @@
 
 Afin de faciliter le déploiement de l'application, chaque microservice possède son Dockerfile qui spécifie :
 
-* ``` FROM ```
+* ``` FROM openjdk:17-jdk-alpine ``` : l'image à partir de laquelle docker se base pour construire notre image. Ici, nous utilisons une image légère contenant une installation minimale de Java 17 basée sur une distribution Linux.
+* ``` WORKDIR /app ``` : on définit le répertoire à partir duquel toutes les commandes successives vont être exécutées.
+* ``` COPY target/nom_du_service-version-SNAPSHOT.jar app.jar ``` : on copie le fichier .jar généré lors de l'installation du service
+* ``` ENV VARIABLE_ENVIRONNEMENT=variable ``` : optionnel, on déclare les variables d'environnement
+* ``` EXPOSE PORT ``` : on déclare le port utilisé à l'intérieur du conteneur
+* ``` ENTRYPOINT ["java", "-jar", "app.jar"] ``` : on définit la commande exécutée au démarrage du conteneur
+
+De plus, nous avons un docker-compose.yml à la racine du projet qui permet de démarrer tous les conteneurs dans le bon ordre, ce qui est important 
