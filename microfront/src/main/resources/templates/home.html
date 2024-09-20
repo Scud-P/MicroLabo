@@ -5,6 +5,24 @@
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Medilabo Solutions</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="home.html">Home</a>
+                </li>
+            </ul>
+            <form class="d-flex" action="/api/logout" method="GET">
+                <button class="btn btn-outline-danger" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
 <div class="container">
     <h1 class="title mt-3">Microlabo Application</h1>
     <div class="row">

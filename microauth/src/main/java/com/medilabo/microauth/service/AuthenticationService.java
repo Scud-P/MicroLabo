@@ -30,5 +30,4 @@ public class AuthenticationService {
     public void validateToken(String token) {
         jwtService.validateToken(token);
     }
-
 }

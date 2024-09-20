@@ -13,6 +13,7 @@ public class RouteValidator {
             "/auth/register",
             "/api/login",
             "/api/error",
+            "/api/logout-success",
             "/auth/token",
             "/auth/validate",
             "/auth/isAuthenticated",

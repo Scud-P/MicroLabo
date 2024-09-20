@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Logout Success</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<p>You have been successfully logged out!</p>
+<script type="text/javascript">
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function() {
+        window.history.go(1);
+    };
+</script>
+<div class="container">
+    <a href="/api/login" class="btn btn-primary">Return to login page</a>
+</div>
+</body>
+</html>
