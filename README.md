@@ -136,17 +136,20 @@ De type NOSQL, elle stocke l'information dans des documents au format BSON (Bina
 Flexible, elle n'a pas de schéma, et ne se soucie donc pas du format des documents stockés qui pourraient changer avec le temps. Elle propose des Index **full-text** qui permettent des requêtes rapides et ciblés avec des mots-clés.
 Nous l'utilisons pour stocker nos notes.
 
-`{
+```
+{
   _id: "1"
   patientId : 1
   patientLastName : "TestNone"
   content : "Le patient déclare qu'il 'se sent très bien' Poids égal ou inférieur au poids recommandé"
   _class : "com.medilabo.micronotes.domain.Note"
-}`
+}
+```
 
 ### Norme 3NF pour la base de données relationnelle
 
-`Table: patient
+```
+Table: patient
 Columns:
 id int(11) AI PK
 first_name varchar(45)
@@ -155,25 +158,32 @@ birthdate date
 gender varchar(1)
 address varchar(45)
 phone_number varchar(45)`
+```
 
-`Table: user_credentials
+
+```
+Table: user_credentials
 Columns:
 id int(11) AI PK
 name varchar(45)
 email varchar(45)
-password varchar(200)`
+password varchar(200)
+```
+
 
 * Nos tables ne contiennent que des valeurs atomiques, elles sont donc **1NF**.
 * Tous leurs attributs dépendent de la clé primaire, soit pour les deux : `id int(11) AI PK`. Elles sont donc **2NF**.
 * Il n'y a pas de dépendance transitive entre les colonnes, elles sont donc **3NF**.
 * Attention cependant lors de l'ajout de fonctionnalités. Si, par exemple, on voulait assigner des patients à un utilisateur, on pourrait créer une table de jointure afin de conserver notre conformité 3NF.
 
-`Table: medical_relationship
+```
+Table: medical_relationship
 Columns:
 partnershipId int(11) AI PK
 userId int(11)
 patientId int(11)
-`
+```
+
 
 ## Green Coding
 
