@@ -89,22 +89,33 @@ On commence par le mot-clé suivant.
 
 Puis pour chaque service, les informations suivantes sont renseignées.
 
-```   nom_du_service: ``` :
-```     image: nom_image ``` :
-```     build: ``` :
-```       context: ./nom_du_context ``` :
-```     ports: -port_écouté:port_exposé ``` :
-```     depends_on: -nom_du_composant ``` :
-```     environment: -nom_de_la_variable ``` :
-```     volumes: -nom_du_dossier ``` :
-```     network: -nom_du_réseau``` :
+### Configuration des services
 
-On termine par des informations valables pour tous les services. 
+Chaque service est configuré avec les informations suivantes :
 
-``` volumes: ``` :
-```   nom_du_volume_1: ``` :
-```   nom_du_volume_2: ``` :
+```yaml
+nom_du_service:
+  image: nom_image
+  build:
+    context: ./nom_du_context
+  ports:
+    - port_écouté:port_exposé
+  depends_on:
+    - nom_du_composant
+  environment:
+    - nom_de_la_variable
+  volumes:
+    - nom_du_dossier
+  network:
+    - nom_du_réseau
+    
+#On termine par des informations valables pour tous les services. 
 
-``` networks: -nom_du_réseau``` :
-```   nom_du_réseau: ``` :
-```     driver: type_de_réseau``` :
+volumes:
+  nom_du_volume_1:
+  nom_du_volume_2:
+
+networks:
+  nom_du_réseau:
+    driver: type_de_réseau
+```
