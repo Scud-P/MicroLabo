@@ -94,28 +94,28 @@ Puis pour chaque service, les informations suivantes sont renseignées.
 Chaque service est configuré avec les informations suivantes :
 
 ```yaml
-nom_du_service:
-  image: nom_image
-  build:
-    context: ./nom_du_context
+nom_du_service:  # Nom du service dans Docker Compose
+  image: nom_image  # Image Docker utilisée pour ce service
+  build:  # Instruction pour construire l'image Docker
+    context: ./nom_du_context  # Chemin vers le répertoire contenant le Dockerfile
   ports:
-    - port_écouté:port_exposé
+    - port_exposé:port_écouté  # Port sur la machine hôte (port_exposé) mappé au port dans le conteneur (port_écouté)
   depends_on:
-    - nom_du_composant
+    - nom_du_composant  # Ce service dépend de ce composant, il attendra que ce dernier soit démarré pour démarrer lui-même
   environment:
-    - nom_de_la_variable
+    - nom_de_la_variable  # Variables d'environnement passées au conteneur
   volumes:
-    - nom_du_dossier
+    - nom_du_dossier  # Mappe un volume au conteneur
   network:
-    - nom_du_réseau
-    
-#On termine par des informations valables pour tous les services. 
+    - nom_du_réseau  # Le réseau Docker sur lequel ce service communique avec d'autres services
+
+# On termine par des informations valables pour tous les services.
 
 volumes:
-  nom_du_volume_1:
-  nom_du_volume_2:
+  nom_du_volume_1:  # Définition d'un volume persistant que plusieurs services peuvent partager
+  nom_du_volume_2:  # Un autre volume persistant
 
 networks:
-  nom_du_réseau:
+  nom_du_réseau:  # Définition d'un réseau Docker que les services peuvent utiliser pour communiquer
     driver: type_de_réseau
 ```
