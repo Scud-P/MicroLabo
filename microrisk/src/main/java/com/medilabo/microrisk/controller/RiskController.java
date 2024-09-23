@@ -26,6 +26,7 @@ public class RiskController {
     @GetMapping("/{id}")
     public ResponseEntity<String> getRiskForPatient(@PathVariable("id") Long id) {
         String risk = riskService.calculateRiskForPatient(id);
+        System.out.println("Id received in the RiskController" + id);
         return ResponseEntity.ok(risk);
     }
 

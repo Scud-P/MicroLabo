@@ -14,6 +14,15 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * The {@code AuthenticationFilter} class is a Spring Cloud Gateway filter
+ * that intercepts requests to validate JWT tokens for secured endpoints.
+ * This filter checks if a request is secured based on the configured
+ * {@link RouteValidator}. If a request is secured, it attempts to retrieve
+ * the JWT token from the Authorization header or from cookies. If the token
+ * is missing or invalid, the filter redirects the user to the login page
+ * with an appropriate error message.
+ */
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
@@ -23,10 +32,19 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Autowired
     private JwtUtil jwtUtil;
 
+    /**
+     * Constructs a new {@code AuthenticationFilter}.
+     */
     public AuthenticationFilter() {
         super(Config.class);
     }
 
+    /**
+     * Applies the authentication filter to the given exchange and chain.
+     *
+     * @param config the configuration for this filter
+     * @return a {@link GatewayFilter} that processes the request
+     */
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
@@ -39,7 +57,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     if (exchange.getRequest().getCookies().containsKey("token")) {
                         authorizationHeader = exchange.getRequest().getCookies().getFirst("token").getValue();
                     } else {
-                        return redirectToErrorPage(exchange, "Unauthorized access, redirecting to login page");
+                        return redirectToErrorPage(exchange);
                     }
                 }
                 // Remove the "Bearer " part if the header is present
@@ -51,21 +69,30 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 try {
                     jwtUtil.validateToken(authorizationHeader);
                 } catch (Exception e) {
-                    return redirectToErrorPage(exchange, "Unauthorized access, redirecting to login page");
+                    return redirectToErrorPage(exchange);
                 }
             }
             return chain.filter(exchange);
         });
     }
 
-    private Mono<Void> redirectToErrorPage(ServerWebExchange exchange, String errorMessage) {
+    /**
+     * Redirects the user to the login page with an error message.
+     *
+     * @param exchange the current server web exchange
+     * @return a {@link Mono} that completes when the response is set
+     */
+    private Mono<Void> redirectToErrorPage(ServerWebExchange exchange) {
         exchange.getResponse().setStatusCode(HttpStatus.SEE_OTHER);
         HttpHeaders headers = exchange.getResponse().getHeaders();
-        String redirectUrl = "/api/login?error=" + UriUtils.encode(errorMessage, StandardCharsets.UTF_8);
+        String redirectUrl = "/api/login?error=" + UriUtils.encode("Unauthorized access, redirecting to login page", StandardCharsets.UTF_8);
         headers.setLocation(URI.create(redirectUrl));
         return exchange.getResponse().setComplete();
     }
 
+    /**
+     * Configuration class for the {@code AuthenticationFilter}.
+     */
     public static class Config {
     }
 }

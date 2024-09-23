@@ -189,4 +189,23 @@ patientId int(11)
 
 ### Bonnes pratiques de conception et développement
 
-### Bonnes pratiques de déploiement
+* UI/UX simple et bien orientée vers les besoins de l’utilisateur → Limitation du temps d’utilisation
+* Application documentée et testée, sans déchets → Limitation du temps de maintenance
+* Utilisation d’objets légers (DTO) → Limitation de l’utilisation des ressources
+* Requêtes ciblées et utilisation d’index → Limitations des opérations I/O et traitements des données post-requête
+* Complexité algorithmique la plus faible possible → Limitation de l’énergie utilisée
+
+### Containerisation et bonnes pratiques de déploiement
+
+* Utilisation de conteneurs qui contrairement aux machines virtuelles, partagent le kernel de la machine hôte → Consomment moins de ressources
+* Possibilité de déployer chaque service de manière indépendante → Pas besoin de redéployer l’application entière en cas de nouvelle version d'un service
+* En cas de montée en charge, possibilité de cibler les services à scaler → Pas de gaspillage des ressources en matériel et énergie
+
+## Documentation
+
+### Javadoc
+
+### Swagger
+
+
+
