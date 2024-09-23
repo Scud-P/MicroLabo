@@ -83,16 +83,28 @@ Afin de faciliter le déploiement de l'application, chaque microservice possède
 
 De plus, nous avons un docker-compose.yml à la racine du projet qui permet de démarrer tous les conteneurs dans le bon ordre, ce qui est important lorsque certains composants dépendent des autres pour fonctionner. Comme l'authentification qui dépend des utilisateurs dans la base de données MySQL.
 
+On commence par le mot-clé suivant.
+
 ``` services: ``` :
-``` nom_du_service: ``` :
-``` image: nom_image ``` :
-``` build: ``` :
-``` context: ./nom_du_context ``` :
-``` ports: -port_écouté:port_exposé ``` :
-``` depends_on: -nom_du_composant ``` :
-``` environment: -nom_de_la_variable ``` :
-``` volumes: -nom_du_dossier ``` :
-``` network: -nom_du_réseau``` :
+
+Puis pour chaque service, les informations suivantes sont renseignées.
+
+```   nom_du_service: ``` :
+```     image: nom_image ``` :
+```     build: ``` :
+```       context: ./nom_du_context ``` :
+```     ports: -port_écouté:port_exposé ``` :
+```     depends_on: -nom_du_composant ``` :
+```     environment: -nom_de_la_variable ``` :
+```     volumes: -nom_du_dossier ``` :
+```     network: -nom_du_réseau``` :
+
+On termine par des informations valables pour tous les services. 
+
+``` volumes: ``` :
+```   nom_du_volume_1: ``` :
+```   nom_du_volume_2: ``` :
+
 ``` networks: -nom_du_réseau``` :
-``` nom_du_réseau: ``` :
-``` driver: type_de_réseau``` :
+```   nom_du_réseau: ``` :
+```     driver: type_de_réseau``` :
