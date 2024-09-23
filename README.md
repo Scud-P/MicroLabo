@@ -81,4 +81,18 @@ Afin de faciliter le déploiement de l'application, chaque microservice possède
 * ``` EXPOSE PORT ``` : on déclare le port utilisé à l'intérieur du conteneur
 * ``` ENTRYPOINT ["java", "-jar", "app.jar"] ``` : on définit la commande exécutée au démarrage du conteneur
 
-De plus, nous avons un docker-compose.yml à la racine du projet qui permet de démarrer tous les conteneurs dans le bon ordre, ce qui est important 
+De plus, nous avons un docker-compose.yml à la racine du projet qui permet de démarrer tous les conteneurs dans le bon ordre, ce qui est important lorsque certains composants dépendent des autres pour fonctionner. Comme l'authentification qui dépend des utilisateurs dans la base de données MySQL.
+
+``` services: ``` :
+``` nom_du_service: ``` :
+``` image: nom_image ``` :
+``` build: ``` :
+``` context: ./nom_du_context ``` :
+``` ports: -port_écouté:port_exposé ``` :
+``` depends_on: -nom_du_composant ``` :
+``` environment: -nom_de_la_variable ``` :
+``` volumes: -nom_du_dossier ``` :
+``` network: -nom_du_réseau``` :
+``` networks: -nom_du_réseau``` :
+``` nom_du_réseau: ``` :
+``` driver: type_de_réseau``` :
