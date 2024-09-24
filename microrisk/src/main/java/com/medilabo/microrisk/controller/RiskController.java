@@ -28,7 +28,6 @@ public class RiskController {
     public ResponseEntity<String> getRiskForPatient(@PathVariable("id") Long id,
                                                     @CookieValue(value = "token", required = false) String token) {
         String risk = riskService.calculateRiskForPatient(id, token);
-        System.out.println("Id received in the RiskController" + id);
         return ResponseEntity.ok(risk);
     }
 
