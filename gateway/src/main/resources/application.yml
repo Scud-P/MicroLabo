@@ -9,8 +9,13 @@ spring:
           uri: http://microlabo:8081
           predicates:
             - Path=/patients/**
-          filters:
-            - AuthenticationFilter
+#          filters:
+#            - AuthenticationFilter
+
+        - id: health-check
+          uri: http://microlabo:8081
+          predicates:
+            - Path=/health
 
         - id: microfront
           uri: http://microfront:8082

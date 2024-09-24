@@ -115,7 +115,9 @@ public class PatientService {
      * @return the birthdate of the patient
      */
     public LocalDate getBirthdateById(Long id) {
-        return patientRepository.findBirthdateById(id);
+        LocalDate birthdate = patientRepository.findBirthdateById(id);
+        System.out.println("Birthdate found by service in repo: " + birthdate);
+        return birthdate;
     }
 
     /**
@@ -125,7 +127,9 @@ public class PatientService {
      * @return the gender of the patient
      */
     public String getGenderById(Long id) {
-        return patientRepository.findGenderById(id);
+        String gender = patientRepository.findGenderById(id);
+        System.out.println("Gender found by service in repo: " + gender);
+        return gender;
     }
 
     /**

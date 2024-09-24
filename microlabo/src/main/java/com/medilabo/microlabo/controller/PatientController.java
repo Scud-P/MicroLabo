@@ -101,6 +101,7 @@ public class PatientController {
     @GetMapping(value = "/{id}/birthdate")
     public ResponseEntity<LocalDate> getBirthdate(@PathVariable("id") Long id) {
         LocalDate birthdate = patientService.getBirthdateById(id);
+        System.out.println("Birthdate found in Microlabo PatientController: " + birthdate);
         return ResponseEntity.ok(birthdate);
     }
 
@@ -113,6 +114,7 @@ public class PatientController {
     @GetMapping(value = "/{id}/gender")
     public ResponseEntity<String> getGender(@PathVariable("id") Long id) {
         String gender = patientService.getGenderById(id);
+        System.out.println("Gender found in Microlabo PatientController: " + gender);
         return ResponseEntity.ok(gender);
     }
 

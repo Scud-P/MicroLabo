@@ -39,11 +39,10 @@ public class RiskService {
      * @param id the ID of the patient
      * @return the birthdate of the patient
      */
-    @GetMapping("/fetchBirthdate/{id}")
     public LocalDate fetchBirthDate(@PathVariable Long id) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://microlabo:8081/patients/{id}/birthdate", id)
+                .uri("http://192.168.0.22:8080/patients/{id}/birthdate", id)
                 .retrieve()
                 .bodyToMono(LocalDate.class)
                 .block();
@@ -55,11 +54,10 @@ public class RiskService {
      * @param id the ID of the patient
      * @return the gender of the patient
      */
-    @GetMapping("/fetchGender/{id}")
     public String fetchGender(@PathVariable Long id) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://microlabo:8081/patients/{id}/gender", id)
+                .uri("http://192.168.0.22:8080/patients/{id}/gender", id)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -173,9 +171,8 @@ public class RiskService {
      * @param patientId the ID of the patient
      * @return a string representing the risk level ("None", "Borderline", "In Danger", "Early onset")
      */
-    public String calculateRiskForPatient(Long patientId) {
-        int age = calculateAge(patientId);
-        String gender = fetchGender(patientId);
+    public String calculateRiskForPatient(Long patientId, LocalDate birthdate, String gender) {
+        int age = Period.between(birthdate, LocalDate.now()).getYears();
         long riskWordOccurrences = getRiskWordsOccurrences(patientId);
 
         if (riskWordOccurrences == 0) {
