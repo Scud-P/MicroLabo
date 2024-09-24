@@ -16,7 +16,7 @@ public class RiskService {
     private WebClient.Builder webClientBuilder;
 
     /**
-     * Fetches the risk assessment for a patient by their ID.
+     * Fetches the risk assessment for a patient by their ID. Includes the cookie to the request to Authenticate on Microrisk Service.
      *
      * @param id    The ID of the patient whose risk assessment is to be fetched.
      * @param token Authorization token for the request.
@@ -26,6 +26,7 @@ public class RiskService {
         return webClientBuilder.build()
                 .get()
                 .uri("/risk/{patientId}", id)
+                .cookie("token", token)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)

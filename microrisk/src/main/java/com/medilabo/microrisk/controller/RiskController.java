@@ -21,11 +21,13 @@ public class RiskController {
      * Retrieves the risk level for a patient by their ID.
      *
      * @param id the ID of the patient
+     * @param token the authentication token retrieved from the cookie
      * @return a  ResponseEntity containing the calculated risk level as a String
      */
     @GetMapping("/{id}")
-    public ResponseEntity<String> getRiskForPatient(@PathVariable("id") Long id) {
-        String risk = riskService.calculateRiskForPatient(id);
+    public ResponseEntity<String> getRiskForPatient(@PathVariable("id") Long id,
+                                                    @CookieValue(value = "token", required = false) String token) {
+        String risk = riskService.calculateRiskForPatient(id, token);
         System.out.println("Id received in the RiskController" + id);
         return ResponseEntity.ok(risk);
     }

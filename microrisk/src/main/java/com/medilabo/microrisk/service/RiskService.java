@@ -5,7 +5,7 @@ import com.medilabo.microrisk.domain.RiskWord;
 import com.medilabo.microrisk.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -30,36 +30,40 @@ public class RiskService {
     @Autowired
     private NoteRepository noteRepository;
 
-    //TODO DOUBLE CHECK THAT THIS WORKS LIVE
-
 
     /**
-     * Fetches the birthdate of a patient by making a REST call the patient microservice (microlabo).
+     * Fetches the birthdate of a patient by making a REST call to the patient microservice (microlabo) through the gateway.
+     * The request is authenticated using a cookie containing the token.
      *
-     * @param id the ID of the patient
+     * @param id    the ID of the patient
+     * @param token the authentication token retrieved from the cookie
      * @return the birthdate of the patient
      */
-    @GetMapping("/fetchBirthdate/{id}")
-    public LocalDate fetchBirthDate(@PathVariable Long id) {
+    public LocalDate fetchBirthDate(@PathVariable Long id,
+                                    @CookieValue(value = "token", required = false) String token) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://microlabo:8081/patients/{id}/birthdate", id)
+                .uri("http://gateway:8080/patients/{id}/birthdate", id)
+                .cookie("token", token)
                 .retrieve()
                 .bodyToMono(LocalDate.class)
                 .block();
     }
 
     /**
-     * Fetches the gender of a patient by making a REST call the patient microservice (microlabo).
+     * Fetches the gender of a patient by making a REST call to the patient microservice (microlabo) through the gateway.
+     * The request is authenticated using a cookie containing the token.
      *
-     * @param id the ID of the patient
+     * @param id    the ID of the patient
+     * @param token the authentication token retrieved from the cookie
      * @return the gender of the patient
      */
-    @GetMapping("/fetchGender/{id}")
-    public String fetchGender(@PathVariable Long id) {
+    public String fetchGender(@PathVariable Long id,
+                              @CookieValue(value = "token", required = false) String token) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://microlabo:8081/patients/{id}/gender", id)
+                .uri("http://gateway:8080/patients/{id}/gender", id)
+                .cookie("token", token)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -67,12 +71,15 @@ public class RiskService {
 
     /**
      * Calculates the age of a patient based on their birthdate.
+     * The method retrieves the birthdate using the authentication token from the cookie.
      *
      * @param patientId the ID of the patient
+     * @param token     the authentication token retrieved from the cookie
      * @return the age of the patient, or 0 if birthdate is not available
      */
-    public int calculateAge(Long patientId) {
-        LocalDate birthDate = fetchBirthDate(patientId);
+    public int calculateAge(Long patientId,
+                            @CookieValue(value = "token", required = false) String token) {
+        LocalDate birthDate = fetchBirthDate(patientId, token);
         if (birthDate == null) {
             return 0;
         }
@@ -169,13 +176,16 @@ public class RiskService {
 
     /**
      * Determines the risk level for a patient based on their age, gender, and the risk words found in their notes.
+     * The method retrieves the necessary patient information using the authentication token from the cookie.
      *
      * @param patientId the ID of the patient
+     * @param token     the authentication token retrieved from the cookie
      * @return a string representing the risk level ("None", "Borderline", "In Danger", "Early onset")
      */
-    public String calculateRiskForPatient(Long patientId) {
-        int age = calculateAge(patientId);
-        String gender = fetchGender(patientId);
+    public String calculateRiskForPatient(Long patientId,
+                                          @CookieValue(value = "token", required = false) String token) {
+        int age = calculateAge(patientId, token);
+        String gender = fetchGender(patientId, token);
         long riskWordOccurrences = getRiskWordsOccurrences(patientId);
 
         if (riskWordOccurrences == 0) {
