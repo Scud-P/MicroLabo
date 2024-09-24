@@ -5,6 +5,7 @@ import com.medilabo.microfront.controller.PatientController;
 import com.medilabo.microfront.exception.PatientNotFoundException;
 import com.medilabo.microfront.service.PatientService;
 import com.medilabo.microfront.service.RiskService;
+import jakarta.servlet.http.Cookie;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,7 +28,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -152,14 +154,15 @@ public class PatientControllerTest {
         verify(model).addAttribute("errorMessage", "Oops");
     }
 
-//    @Test
-//    public void testUpdatePatient() {
-//        when(patientService.updatePatient(anyLong(), any(PatientBean.class), anyString())).thenReturn(firstPatient);
-//        String result = patientController.updatePatient(firstPatient.getId(), firstPatient, model, "someValidToken");
-//
-//        assertEquals("redirect:http://192.168.0.22:8080/api/patients/1", result);
-//        verify(model, times(1)).addAttribute("patient", firstPatient);
-//    }
+    @Test
+    public void testUpdatePatient() throws Exception {
+        when(patientService.updatePatient(anyLong(), any(PatientBean.class), anyString())).thenReturn(firstPatient);
+        mockMvc.perform(put("/api/patients/{id}", firstPatient.getId())
+                        .cookie(new Cookie("token", "someValidToken"))
+                        .flashAttr("patient", firstPatient))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/patients/" + firstPatient.getId()));
+    }
 
     @Test
     public void testShowAddPatient() {
