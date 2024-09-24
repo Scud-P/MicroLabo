@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -48,7 +49,7 @@ public class PatientService {
      * @return The {@link PatientBean} object for the specified patient.
      * @throws PatientNotFoundException if the patient is not found.
      */
-    public PatientBean fetchPatientById(long id, String token) {
+    public PatientBean fetchPatientById(long id, @CookieValue(value = "token", required = false) String token) {
         return webClientBuilder.build()
                 .get()
                 .uri("/patients/{id}", id)

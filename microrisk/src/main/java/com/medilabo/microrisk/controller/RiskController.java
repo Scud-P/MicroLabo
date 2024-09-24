@@ -25,30 +25,16 @@ public class RiskController {
      * @param id the ID of the patient
      * @return a  ResponseEntity containing the calculated risk level as a String
      */
-//    @GetMapping("/{id}")
-//    public ResponseEntity<String> getRiskForPatient(@PathVariable("id") Long id) {
-//        String risk = riskService.calculateRiskForPatient(id);
-//        System.out.println("Id received in the RiskController" + id);
-//        return ResponseEntity.ok(risk);
-//    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> getRiskForPatient(@PathVariable("id") Long id) {
-        LocalDate birthDate = riskService.fetchBirthDate(id);
-        String gender = riskService.fetchGender(id);
+    public ResponseEntity<String> getRiskForPatient(@PathVariable("id") Long id,
+                                                    @CookieValue(value = "token", required = false) String token) {
+        System.out.println("Token Received in microrisk riskController: " + token);
+        LocalDate birthDate = riskService.fetchBirthDate(id, token);
+        String gender = riskService.fetchGender(id, token);
         String risk = riskService.calculateRiskForPatient(id, birthDate, gender);
         System.out.println("Id received in the RiskController" + id);
         return ResponseEntity.ok(risk);
-    }
-
-    @GetMapping("/fetchBirthdate/{id}")
-    public LocalDate fetchBirthDate(@PathVariable Long id) {
-        return riskService.fetchBirthDate(id);
-    }
-
-    @GetMapping("/fetchGender/{id}")
-    public String fetchGender(@PathVariable Long id) {
-        return riskService.fetchGender(id);
     }
 
 }

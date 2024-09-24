@@ -4,7 +4,9 @@ import com.medilabo.microrisk.domain.ExclusionWord;
 import com.medilabo.microrisk.domain.RiskWord;
 import com.medilabo.microrisk.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -39,10 +41,15 @@ public class RiskService {
      * @param id the ID of the patient
      * @return the birthdate of the patient
      */
-    public LocalDate fetchBirthDate(@PathVariable Long id) {
+    public LocalDate fetchBirthDate(@PathVariable Long id,
+                                    @CookieValue(value = "token", required = false) String token) {
+
+        System.out.println("Token from fetchBirthDate Rest Call: " + token);
+
         return webClientBuilder.build()
                 .get()
                 .uri("http://192.168.0.22:8080/patients/{id}/birthdate", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(LocalDate.class)
                 .block();
@@ -54,27 +61,18 @@ public class RiskService {
      * @param id the ID of the patient
      * @return the gender of the patient
      */
-    public String fetchGender(@PathVariable Long id) {
+    public String fetchGender(@PathVariable Long id,
+                              @CookieValue(value = "token", required = false) String token) {
+
+        System.out.println("Token from fetchGender Rest Call: " + token);
+
         return webClientBuilder.build()
                 .get()
                 .uri("http://192.168.0.22:8080/patients/{id}/gender", id)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-    }
-
-    /**
-     * Calculates the age of a patient based on their birthdate.
-     *
-     * @param patientId the ID of the patient
-     * @return the age of the patient, or 0 if birthdate is not available
-     */
-    public int calculateAge(Long patientId) {
-        LocalDate birthDate = fetchBirthDate(patientId);
-        if (birthDate == null) {
-            return 0;
-        }
-        return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
     /**

@@ -106,6 +106,8 @@ public class PatientController {
     public String getPatient(@PathVariable("id") long id, Model model,
                              @CookieValue(value = "token", required = false) String token) {
 
+        System.out.println("Token received in Microfront getPatient method: " + token);
+
         try {
             PatientBean patient = patientService.fetchPatientById(id, token);
 

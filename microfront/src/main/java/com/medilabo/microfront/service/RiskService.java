@@ -3,6 +3,7 @@ package com.medilabo.microfront.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -22,10 +23,14 @@ public class RiskService {
      * @param token Authorization token for the request.
      * @return String representing the risk assessment for the specified patient.
      */
-    public String fetchRiskById(long id, String token) {
+    public String fetchRiskById(long id, @CookieValue(value = "token", required = false) String token) {
+
+        System.out.println("Token received in microfront's fetchRiskById: " + token);
+
         return webClientBuilder.build()
                 .get()
                 .uri("/risk/{patientId}", id)
+                .cookie("token", token)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)
