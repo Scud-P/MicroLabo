@@ -51,7 +51,6 @@ public class AuthenticationService {
 
     /**
      * Validates the provided JWT token.
-     *
      * This method utilizes the {@link JwtService} to check the validity of the given token.
      * If the token is invalid, an exception will be thrown.
      *
