@@ -3,40 +3,86 @@
 <head>
     <title>Patient Details</title>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+    <style>
+        .form-container {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 70%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #D53829;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        body {
+            background-color: #C5EBF9;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h1>Patient Details</h1>
-    <div class="mb-3">
-        <label for="firstName" class="form-label">First Name</label>
-        <p id="firstName" class="form-control" th:text="${patient.firstName}">First Name</p>
+<nav class="navbar navbar-expand-lg" style="background-color: #D53829;">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="/api/home">Medilabo Solutions</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                </li>
+            </ul>
+            <form class="d-flex" action="/api/logout" method="GET">
+                <button class="btn btn-outline-light" type="submit">Logout</button>
+            </form>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="lastName" class="form-label">Last Name</label>
-        <p id="lastName" class="form-control" th:text="${patient.lastName}">Last Name</p>
+</nav>
+
+<h1>Patient Details</h1>
+
+<div class="form-container">
+    <div class="row mb-1">
+        <div class="col-md-6">
+            <label for="firstName" class="form-label">First Name</label>
+            <p id="firstName" class="form-control" th:text="${patient.firstName}">First Name</p>
+        </div>
+        <div class="col-md-6">
+            <label for="lastName" class="form-label">Last Name</label>
+            <p id="lastName" class="form-control" th:text="${patient.lastName}">Last Name</p>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="birthdate" class="form-label">Birth Date</label>
-        <p id="birthdate" class="form-control" th:text="${formattedBirthdate}"> Birth Date</p>
+    <div class="row mb-1">
+        <div class="col-md-6">
+            <label for="birthdate" class="form-label">Birth Date</label>
+            <p id="birthdate" class="form-control" th:text="${formattedBirthdate}">Birth Date</p>
+        </div>
+        <div class="col-md-6">
+            <label for="gender" class="form-label">Gender</label>
+            <p id="gender" class="form-control" th:text="${patient.gender == 'M' ? 'Male' : 'Female'}">Gender</p>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="gender" class="form-label">Gender</label>
-        <p id="gender" class="form-control" th:text="${patient.gender == 'M' ? 'Male' : 'Female'}">Gender</p>
-    </div>
-    <div class="mb-3">
+    <div class="mb-1">
         <label for="address" class="form-label">Address</label>
         <p id="address" class="form-control" th:text="${patient.address}">Address</p>
     </div>
-    <div class="mb-3">
+    <div class="mb-1">
         <label for="phoneNumber" class="form-label">Phone Number</label>
         <p id="phoneNumber" class="form-control" th:text="${patient.phoneNumber}">Phone Number</p>
     </div>
-    <div class="mb-3">
+    <div class="mb-1">
         <label for="risk" class="form-label">Risk</label>
         <p id="risk" class="form-control" th:text="${risk}">Risk</p>
     </div>
-    <a class="btn btn-primary" href="/api/home">Back</a>
-    <a class="btn btn-primary" th:href="@{/api/patients/update/{id}(id=${patient.id})}">Edit</a>
+    <a class="btn btn-danger btn-sm btn-custom" href="/api/home">Back</a>
+    <a class="btn btn-primary btn-sm btn-custom" th:href="@{/api/patients/update/{id}(id=${patient.id})}">Edit</a>
 </div>
 <script type="text/javascript" src="/webjars/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>

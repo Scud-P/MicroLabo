@@ -29,7 +29,7 @@
 * C'est le point d'entrée unique de notre application.
 * _Stack technique spécifique : Spring Cloud Gateway, JsonWebToken_
 
-[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/exploration/gateway)
+[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/master/gateway)
 
 ### microauth
 
@@ -37,14 +37,14 @@
 * Il permet de gérer les utilisateurs et de générer un token JWT lors de leur connexion. Il interagit avec la base de données MySQL.
 * _Stack technique spécifique : Spring Security, Spring Boot Web, Spring Boot Data JPA, JsonWebToken_
 
-[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/exploration/gateway)
+[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/master/gateway)
 
 ### microfront
 
 * Service faisant office d'interface utilisateur.
 * _Stack technique spécifique : Thymeleaf, BootStrap, Spring Boot Web, Reactor 3_
 
-[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/exploration/microfront)
+[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/master/microfront)
 
 ### microlabo
 
@@ -52,7 +52,7 @@
 * Il interagit avec la base de données MySQL
 * _Stack technique spécifique : Spring Boot Web, Spring Boot Data JPA_
 
-  [Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/exploration/microlabo)
+  [Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/master/microlabo)
 
 ### micronotes
 
@@ -60,7 +60,7 @@
 * Il interagit avec la base de données MongoDB
 * _Stack technique spécifique : Spring Boot Web, Spring Boot Data MongoDB_
 
-[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/exploration/micronotes)
+[Lien vers le module] (https://github.com/Scud-P/MicroLabo/tree/master/micronotes)
 
 ### microrisk
 
