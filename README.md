@@ -200,12 +200,3 @@ patientId int(11)
 * Utilisation de conteneurs qui contrairement aux machines virtuelles, partagent le kernel de la machine hôte → Consomment moins de ressources
 * Possibilité de déployer chaque service de manière indépendante → Pas besoin de redéployer l’application entière en cas de nouvelle version d'un service
 * En cas de montée en charge, possibilité de cibler les services à scaler → Pas de gaspillage des ressources en matériel et énergie
-
-## Documentation
-
-### Javadoc
-
-### Swagger
-
-
-
