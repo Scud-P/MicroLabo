@@ -2,6 +2,11 @@ package com.medilabo.micronotes.domain;
 
 import lombok.Getter;
 
+/**
+ * Enum representing various risk words associated with patient notes.
+ * Each constant in this enum corresponds to a specific medical term
+ * that can be used to identify potential risks in patient health assessments.
+ */
 @Getter
 public enum RiskWord {
 
@@ -19,10 +24,17 @@ public enum RiskWord {
     ANTICORPS("Anticorps"),
     ;
 
+    /**
+     * The string representation of the risk word.
+     */
     private final String riskWord;
 
+    /**
+     * Constructor for RiskWord enum.
+     *
+     * @param riskWord the string representation of the risk word.
+     */
     RiskWord(String riskWord) {
         this.riskWord = riskWord;
     }
-
 }

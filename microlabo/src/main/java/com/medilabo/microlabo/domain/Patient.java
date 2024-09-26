@@ -11,6 +11,11 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 
+/**
+ * Entity representing a Patient in the system.
+ * This class maps to the "patient" table in the database and contains various details about the patient,
+ * including their first name, last name, birthdate, gender, address, and phone number.
+ */
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor

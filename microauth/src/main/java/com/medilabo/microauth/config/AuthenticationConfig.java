@@ -37,7 +37,7 @@ public class AuthenticationConfig {
     /**
      * Configures the {@link SecurityFilterChain} for the application.
      *
-     * This method configures HTTP security settings</p>
+     * This method configures HTTP security settings
      *
      * @param http the {@link HttpSecurity} object to configure
      * @return the configured {@link SecurityFilterChain}

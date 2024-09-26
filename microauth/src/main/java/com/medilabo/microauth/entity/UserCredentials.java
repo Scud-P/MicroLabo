@@ -5,6 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing user credentials in the database.
+ * This class maps to the "user_credentials" table and holds the
+ * information required for user authentication and storage.
+ */
 @Entity
 @Data
 @AllArgsConstructor

@@ -26,6 +26,9 @@ import org.springframework.web.util.UriUtils;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Controller for managing user authentication, including login and logout operations.
+ */
 @Controller
 public class UserController {
 
@@ -35,6 +38,13 @@ public class UserController {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+    /**
+     * Displays the login page for registered users.
+     *
+     * @param error Optional parameter that carries an error message if login fails.
+     * @param model Model to add attributes to be displayed on the login page.
+     * @return The name of the view to be rendered, which is the login page.
+     */
     @Operation(summary = "Displays the login page",
             description = "Displays the HTML page where the registered users can log in.",
             parameters = {
@@ -62,6 +72,13 @@ public class UserController {
         return "login";
     }
 
+    /**
+     * Validates the user's login credentials and logs the user in if successful.
+     *
+     * @param username The username of the user attempting to log in.
+     * @param password The password of the user attempting to log in.
+     * @return A response entity containing headers for redirection, including a token cookie if login is successful.
+     */
     @Operation(summary = "Logs the user in",
             description = "Logs the user in with the provided username and password. On success, redirects to the home page. On failure, redirects back to the login page with an error message.",
             parameters = {
@@ -128,6 +145,12 @@ public class UserController {
     }
 
 
+    /**
+     * Logs the user out by invalidating the JWT token stored in the cookie and redirects to the login page.
+     *
+     * @param response The HTTP servlet response to modify the cookies.
+     * @return A response entity indicating the redirection to the logout success page.
+     */
     @Operation(
             summary = "Logs the user out",
             description = "Invalidates the JWT token stored in the cookie and redirects the user to the login page with a success message.",
@@ -160,22 +183,29 @@ public class UserController {
         invalidatedCookie.setMaxAge(0);
         response.addCookie(invalidatedCookie);
 
-        System.out.println(invalidatedCookie);
-
         String redirectUrl = "/api/logout-success";
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(redirectUrl));
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
+    /**
+     * Displays the logout success page.
+     *
+     * @return The name of the view to be rendered, which is the logout success page.
+     */
     @GetMapping("/api/logout-success")
     public String getLogoutSuccess() {
         return "logout-success";
     }
 
+    /**
+     * Displays the logout page.
+     *
+     * @return The name of the view to be rendered, which is the logout page.
+     */
     @GetMapping("/api/logout")
     public String getLogout() {
         return "logout" ;
     }
-
 }

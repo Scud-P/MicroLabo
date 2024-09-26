@@ -26,6 +26,11 @@
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
+                        <configuration>
+                            <additionalOptions>
+                                <additionalOption>-Xdoclint:none</additionalOption>
+                            </additionalOptions>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -60,4 +65,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

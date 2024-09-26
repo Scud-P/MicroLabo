@@ -18,6 +18,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
+/**
+ * Controller for handling operations related to notes for patients.
+ * Provides endpoints to retrieve, create, update, and delete notes.
+ */
 @Controller
 @RequestMapping("/api")
 public class NoteController {
@@ -28,6 +32,14 @@ public class NoteController {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
+    /**
+     * Retrieves all notes for a given patient by their ID.
+     *
+     * @param token     The Bearer token for authentication.
+     * @param patientId The ID of the patient for whom notes are to be retrieved.
+     * @param model     The model to be populated with note data.
+     * @return The name of the view displaying the list of notes.
+     */
     @GetMapping("/notes/patient/{patientId}")
     @Operation(summary = "Gets all notes by patient ID",
             description = "Retrieves all notes for a given patient by their ID.",
@@ -65,6 +77,14 @@ public class NoteController {
         }
     }
 
+    /**
+     * Updates the model with the notes of the specified patient.
+     *
+     * @param token     The Bearer token for authentication.
+     * @param patientId The ID of the patient for whom notes are to be retrieved.
+     * @param model     The model to be populated with note data.
+     * @return The name of the view displaying the list of notes.
+     */
     public String updateModelWithPatientNotes(String token, long patientId, Model model) {
         List<NoteBean> notes = noteService.fetchNotesByPatientId(token, patientId);
         model.addAttribute("notes", notes);
@@ -73,6 +93,14 @@ public class NoteController {
     }
 
 
+    /**
+     * Retrieves a specific note by its ID to update it.
+     *
+     * @param id    The ID of the note to be updated.
+     * @param token The Bearer token for authentication.
+     * @param model The model to be populated with note data.
+     * @return The name of the view for updating the note.
+     */
     @GetMapping("/notes/update/{id}")
     @Operation(summary = "Finds a note by its ID to update its fields",
             description = "Retrieves a specific note by its ID to update it.",
@@ -109,6 +137,15 @@ public class NoteController {
         }
     }
 
+    /**
+     * Updates a note with the provided details.
+     *
+     * @param id    The ID of the note to be updated.
+     * @param note  The note data to be updated.
+     * @param token The Bearer token for authentication.
+     * @param model The model to be populated with note data.
+     * @return The name of the view displaying the list of notes.
+     */
     @Operation(summary = "Updates a note",
             description = "Updates the note with the id in parameter. Uses a NoteBean DTO in the request body",
             parameters = {
@@ -147,6 +184,14 @@ public class NoteController {
         }
     }
 
+    /**
+     * Displays a form to create a new empty note for the specified patient.
+     *
+     * @param patientId The ID of the patient for whom the note is to be created.
+     * @param token     The Bearer token for authentication.
+     * @param model     The model to be populated with note data.
+     * @return The name of the view for adding a new note.
+     */
     @Operation(summary = "Creates an empty note",
             description = "Creates an empty note for the targeted patient",
             parameters = {
@@ -177,6 +222,14 @@ public class NoteController {
         return "notes/add";
     }
 
+    /**
+     * Validates a newly created note and returns the list of notes for the patient.
+     *
+     * @param token The Bearer token for authentication.
+     * @param note  The note data to be validated.
+     * @param model The model to be populated with note data.
+     * @return The name of the view displaying the list of notes.
+     */
     @Operation(summary = "Validates a new note",
             description = "Validates the newly created note",
             parameters = {
@@ -200,6 +253,14 @@ public class NoteController {
         return updateModelWithPatientNotes(token, patientId, model);
     }
 
+    /**
+     * Deletes a specific note by its ID.
+     *
+     * @param id    The ID of the note to be deleted.
+     * @param token The Bearer token for authentication.
+     * @param model The model to be populated with note data.
+     * @return The name of the view displaying the list of notes.
+     */
     @Operation(summary = "Deletes a note",
             description = "Deletes a note, targeted by its id",
             parameters = {

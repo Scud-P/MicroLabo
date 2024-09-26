@@ -1,3 +1,5 @@
+--Script for creating the necessary SQL Tables
+
 CREATE TABLE IF NOT EXISTS patient (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(45),

@@ -1,19 +1,54 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" >
 <head>
-    <title>Logout Success</title>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+          background-color: #C5EBF9;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }
+
+        .logout-success-container {
+          background-color: white;
+          padding: 40px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          width: 100%;
+          max-width: 400px;
+        }
+
+        .logout-success-container h1 {
+          color: #D53829;
+        }
+
+         .logout-success-container p {
+            color: #D53829;
+            font-style: italic;
+            font-weight: bold
+        }
+
+        .error-message {
+          color: red;
+        }
+    </style>
 </head>
 <body>
-<p>You have been successfully logged out!</p>
+<div class="logout-success-container text-center">
+    <h1 class="mb-4">Médilabo Solutions</h1>
+    <p class="mb-4">You have been successfully logged out!</p>
+    <a href="/api/login" class="btn btn-primary">Return to login page</a>
+</div>
 <script type="text/javascript">
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function() {
         window.history.go(1);
     };
 </script>
-<div class="container">
-    <a href="/api/login" class="btn btn-primary">Return to login page</a>
-</div>
 </body>
 </html>

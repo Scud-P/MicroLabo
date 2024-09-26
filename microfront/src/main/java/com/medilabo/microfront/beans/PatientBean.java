@@ -5,6 +5,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
+/**
+ * Bean class representing a patient in the system.
+ * This class is used to transfer patient data between different
+ * microservices of the application.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

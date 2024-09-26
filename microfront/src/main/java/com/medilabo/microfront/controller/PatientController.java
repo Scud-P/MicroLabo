@@ -25,6 +25,10 @@ import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * PatientController handles HTTP requests related to patient management,
+ * including retrieving, updating, adding, and deleting patient information.
+ */
 @Controller
 @RequestMapping("/api")
 public class PatientController {
@@ -39,6 +43,13 @@ public class PatientController {
     private RiskService riskService;
 
 
+    /**
+     * Gets the home page and populates it with the list of patients.
+     *
+     * @param token The Bearer token for authentication.
+     * @param model The model to populate with patient data.
+     * @return The name of the view displaying the list of patients.
+     */
     @GetMapping("/home")
     @Operation(summary = "Gets the home page and populate it with the list of patients",
             description = "Retrieves all patients found in the MySQL DB",
@@ -69,27 +80,40 @@ public class PatientController {
         return updateModelWithPatients(token, model);
     }
 
+    /**
+     * Updates the model with the list of patients fetched using the provided token.
+     *
+     * @param token The Bearer token for authentication.
+     * @param model The model to populate with patient data.
+     * @return The name of the view to render.
+     */
     public String updateModelWithPatients(String token, Model model) {
         List<PatientBean> patients = patientService.fetchPatients(token);
         model.addAttribute("patients", patients);
         return "home";
     }
 
+    /**
+     * Gets a patient by its ID and populates the model with patient information.
+     *
+     * @param id    The ID of the patient we want to retrieve.
+     * @param model The model to be populated with patient data.
+     * @param token The Bearer token for authentication.
+     * @return The name of the view displaying the patient information.
+     */
     @GetMapping("/patients/{id}")
     @Operation(summary = "Gets a patient by its ID",
             description = "Retrieves a patient's information by its ID",
             parameters = {
                     @Parameter(
-                            name = "Authorization",
-                            description = "The Bearer token for authentication. Syntax: Authorization:token",
-                            required = true,
-                            in = ParameterIn.HEADER,
-                            schema = @Schema(type = "string")),
+                            name = "token",
+                            description = "The token for authentication",
+                            in = ParameterIn.COOKIE,
+                            schema = @Schema(type = "long")),
                     @Parameter(
                             name = "id",
-                            description = "The id of the patient we want to retrieve",
-                            required = false,
-                            schema = @Schema(type = "long"))},
+                            description = "The id of the patient we want to get",
+                            schema = @Schema(type = "string"))},
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -125,6 +149,14 @@ public class PatientController {
         }
     }
 
+    /**
+     * Shows the form to update a patient with the specified ID.
+     *
+     * @param id    The ID of the patient we want to update.
+     * @param token The Bearer token for authentication.
+     * @param model The model to be populated with patient data.
+     * @return The name of the view displaying the update form.
+     */
     @GetMapping("/patients/update/{id}")
     @Operation(summary = "Gets the form to update a patient with his ID",
             description = "Gets the form to update a patient's information with his ID",
@@ -167,6 +199,15 @@ public class PatientController {
         }
     }
 
+    /**
+     * Updates a patient with the provided information from the form.
+     *
+     * @param id      The ID of the patient we are updating.
+     * @param patient The PatientBean containing updated information.
+     * @param model   The model to be populated with patient data.
+     * @param token   The Bearer token for authentication.
+     * @return A ResponseEntity with the redirect location.
+     */
     @PutMapping("/patients/{id}")
     @Operation(summary = "Updates a patient with his ID",
             description = "Updates a patient with the new information provided in the form",
@@ -219,6 +260,12 @@ public class PatientController {
         }
     }
 
+    /**
+     * Gets the form to add a new patient
+     *
+     * @param model The model to be populated with patient data.
+     * @return The name of the view displaying the add patient form.
+     */
     @GetMapping("/patients/add")
     @Operation(summary = "Gets the form to add a new patient",
             description = "Gets the form to add a new patient to the list of patients",
@@ -243,6 +290,14 @@ public class PatientController {
         return "add";
     }
 
+    /**
+     * Adds a new patient with the provided information from the form.
+     *
+     * @param patient The PatientBean containing the new patient information.
+     * @param model   The model to be populated with patient data.
+     * @param token   The Bearer token for authentication.
+     * @return A ResponseEntity with the redirect location.
+     */
     @PostMapping("/patients/validate")
     @Operation(summary = "Validates adding a new patient",
             description = "Validates the patient with all the information from the form",
@@ -284,6 +339,14 @@ public class PatientController {
         }
     }
 
+    /**
+     * Deletes a patient with the specified ID.
+     *
+     * @param id    The ID of the patient to be deleted.
+     * @param token The Bearer token for authentication.
+     * @param model The model to be populated with patient data.
+     * @return A ResponseEntity indicating the result of the deletion.
+     */
     @Operation(summary = "Deletes a patient",
             description = "Delete a patient using his id",
             parameters = {

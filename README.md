@@ -3,7 +3,7 @@
 ### Langages de programmation
 
 * Backend: Java 17
-* Frontend: HTML/CSS
+* Frontend: HTML/CSS + Javascript
 
 ### Stack technique commun
 
@@ -200,3 +200,39 @@ patientId int(11)
 * Utilisation de conteneurs qui contrairement aux machines virtuelles, partagent le kernel de la machine hôte → Consomment moins de ressources
 * Possibilité de déployer chaque service de manière indépendante → Pas besoin de redéployer l’application entière en cas de nouvelle version d'un service
 * En cas de montée en charge, possibilité de cibler les services à scaler → Pas de gaspillage des ressources en matériel et énergie
+
+## Documentation
+
+### Javadoc
+
+La javadoc peut être générée en deux étapes.
+* On ouvre le terminal et on navigue à la racine du projet
+* On lance la commande javadoc ```mvn javadoc:aggregate```
+* On peut la consulter dans le dossier ```root/target/site/apidocs```
+
+### Swagger
+
+Nous utilisons Swagger pour permettre aux utilisateurs de tester notre API.
+Attention, elle est disponible par le microservice Microfront.
+
+* On lance les conteneurs grâce à la commande ```docker-compose up --build```
+* On ouvre un browser et on entre dans la barre d'adresse `http://ip_de_votre_machine:port_du_conteneur_microfront/swagger-ui/index.html`
+
+Pour tester les endpoints protégés, une simple requête POST à `http://ip_de_votre_machine:port_du_conteneur_gateway/auth/token` avec un body :
+
+```
+{
+"username":"Bob",
+"password":"password"
+}
+```
+
+Et vous récupèrerez un token en réponse.
+
+Ensuite, il faut s'authentifier. Sur Swagger UI, allez faire un POST sur /api/login avec notre fameux Bob et son password.
+
+![Requête Login](https://i.imgur.com/WYZHCqW.png)
+
+Vous pourrez ensuite tester tous les endpoints sécurisés avec votre token !
+
+![Requête Patients](https://i.imgur.com/FW6pJTB.png)
