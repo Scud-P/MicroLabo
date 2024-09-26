@@ -3,14 +3,54 @@
 <head>
     <title>Error</title>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+    <style>
+        .error-container {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 70%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #D53829;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        body {
+            background-color: #C5EBF9;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-3">
-    <h1 class="title">Error</h1>
+<nav class="navbar navbar-expand-lg" style="background-color: #D53829;">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="/api/home">Medilabo Solutions</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                </li>
+            </ul>
+            <form class="d-flex" action="/api/logout" method="GET">
+                <button class="btn btn-outline-light" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<h1>Error</h1>
+<div class="error-container mt-3">
     <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
         <p th:text="${errorMessage}"></p>
     </div>
-    <a href="/api/home" class="btn btn-primary">Back to home</a>
+    <div class="d-flex justify-content-center">
+        <a href="/api/home" class="btn btn-primary">Back to home</a>
+    </div>
 </div>
 <script type="text/javascript" src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 </body>

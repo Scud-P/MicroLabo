@@ -36,7 +36,7 @@ public class NoteService {
         return webClientBuilder.build()
                 .get()
                 .uri("/notes/patient/{patientId}", patientId)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .cookie("token", token)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError,
                         clientResponse -> Mono.error(new PatientNotFoundException(

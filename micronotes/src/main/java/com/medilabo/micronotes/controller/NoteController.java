@@ -41,8 +41,9 @@ public class NoteController {
      * @return a list of Note associated with the patient
      */
     @GetMapping("/patient/{patientId}")
-    public List<Note> getNotesByPatientId(@PathVariable("patientId") Long patientId) {
-        return noteService.getNotesByPatientId(patientId);
+    public List<Note> getNotesByPatientId(@PathVariable("patientId") Long patientId,
+                                          @CookieValue(value = "token", required = false) String token) {
+        return noteService.getNotesByPatientId(patientId, token);
     }
 
     /**
@@ -57,13 +58,11 @@ public class NoteController {
         if (Objects.isNull(addedNote)) {
             return ResponseEntity.noContent().build();
         }
-
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(addedNote.getId())
                 .toUri();
-
         return ResponseEntity.created(location).build();
     }
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -48,17 +49,21 @@ public class NoteService {
      * Checks if the patient exists by making a REST call to the patient microservice first.
      *
      * @param patientId the ID of the patient
+     * @param token the token retrieved in the cookie
      * @return a list of Note associated with the patient
      * @throws PatientNotFoundException if the patient is not found
      */
-    public List<Note> getNotesByPatientId(Long patientId) {
+    public List<Note> getNotesByPatientId(Long patientId,
+                                          @CookieValue(value = "token", required = false) String token) {
         Boolean existsPatient = webClientBuilder
                 .baseUrl("http://gateway:8080")
                 .build()
                 .get()
                 .uri("/patients/{id}/exists", patientId)
+                .cookie("token", token)
                 .retrieve()
                 .bodyToMono(Boolean.class)
+                .defaultIfEmpty(false)
                 .block();
 
         if (Boolean.FALSE.equals(existsPatient)) {

@@ -127,5 +127,4 @@ public class PatientController {
         boolean exists = patientService.existsPatient(id);
         return ResponseEntity.ok(exists);
     }
-
 }

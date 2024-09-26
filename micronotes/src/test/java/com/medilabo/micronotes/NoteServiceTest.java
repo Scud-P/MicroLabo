@@ -104,7 +104,7 @@ public class NoteServiceTest {
 
         when(noteRepository.findByPatientId(anyLong())).thenReturn(notes);
 
-        List<Note> foundNotes = noteService.getNotesByPatientId(firstNote.getPatientId());
+        List<Note> foundNotes = noteService.getNotesByPatientId(firstNote.getPatientId(), "someValidToken");
         assertEquals(notes, foundNotes);
     }
 

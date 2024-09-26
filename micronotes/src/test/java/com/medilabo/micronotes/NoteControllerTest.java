@@ -5,6 +5,7 @@ import com.medilabo.micronotes.controller.NoteController;
 import com.medilabo.micronotes.domain.Note;
 import com.medilabo.micronotes.exception.NoteNotFoundException;
 import com.medilabo.micronotes.service.NoteService;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,24 @@ public class NoteControllerTest {
     }
 
     @Test
+    public void getNotesByPatientId_shouldReturnAllNotesWithTheCorrectPatientId() throws Exception {
+
+        when(noteService.getNotesByPatientId(anyLong(), anyString())).thenReturn(notes);
+
+        mockMvc.perform(get("/notes/patient/1")
+                        .cookie(new Cookie("token", "SomeValidToken")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(firstNote.getId())))
+                .andExpect(jsonPath("$[0].patientId", is(firstNote.getPatientId().intValue())))
+                .andExpect(jsonPath("$[0].content", is(firstNote.getContent())))
+                .andExpect(jsonPath("$[1].id", is(secondNote.getId())))
+                .andExpect(jsonPath("$[1].patientId", is(secondNote.getPatientId().intValue())))
+                .andExpect(jsonPath("$[1].content", is(secondNote.getContent())));
+    }
+
+    @Test
     public void getAllNotes_shouldReturnAllNotes() throws Exception {
 
         when(noteService.getAllNotes()).thenReturn(notes);
@@ -65,22 +84,6 @@ public class NoteControllerTest {
                 .andExpect(jsonPath("$[1].content", is(secondNote.getContent())));
     }
 
-    @Test
-    public void getNotesByPatientId_shouldReturnAllNotesWithTheCorrectPatientId() throws Exception {
-
-        when(noteService.getNotesByPatientId(anyLong())).thenReturn(notes);
-
-        mockMvc.perform(get("/notes/patient/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(firstNote.getId())))
-                .andExpect(jsonPath("$[0].patientId", is(firstNote.getPatientId().intValue())))
-                .andExpect(jsonPath("$[0].content", is(firstNote.getContent())))
-                .andExpect(jsonPath("$[1].id", is(secondNote.getId())))
-                .andExpect(jsonPath("$[1].patientId", is(secondNote.getPatientId().intValue())))
-                .andExpect(jsonPath("$[1].content", is(secondNote.getContent())));
-    }
 
     @Test
     public void postRequest_toValidateNote_shouldReturnCreatedCode_whenNoteIsCreated() throws Exception {

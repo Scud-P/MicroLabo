@@ -65,7 +65,7 @@ public class NoteController {
         }
     }
 
-    public String updateModelWithPatientNotes(String token, Long patientId, Model model) {
+    public String updateModelWithPatientNotes(String token, long patientId, Model model) {
         List<NoteBean> notes = noteService.fetchNotesByPatientId(token, patientId);
         model.addAttribute("notes", notes);
         model.addAttribute("patientId", patientId);

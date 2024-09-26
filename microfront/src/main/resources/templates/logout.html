@@ -3,10 +3,47 @@
 <head>
     <title>Microlabo</title>
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css"/>
+    <style>
+        .logout-container {
+            padding: 15px;
+            border-radius: 10px;
+            width: 70%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: #D53829;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        body {
+            background-color: #C5EBF9;
+        }
+    </style>
 </head>
 <body>
-<p>Are you sure you want to log out?</p>
-<form th:action="@{/api/logout}" method="post">
+<nav class="navbar navbar-expand-lg" style="background-color: #D53829;">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="/api/home">Medilabo Solutions</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                </li>
+            </ul>
+            <form class="d-flex" action="/api/logout" method="GET">
+                <button class="btn btn-outline-light" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<h1>Are you sure you want to log out?</h1>
+<form class="logout-container" th:action="@{/api/logout}" method="post">
     <button type="submit" class="btn btn-danger">Log me out</button>
 </form>
 </body>
