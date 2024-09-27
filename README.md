@@ -225,8 +225,7 @@ Pour tester les endpoints protégés, une simple requête POST, il faut absolume
 }
 ```
 
-# API Endpoints
-# API Endpoints
+## API Endpoints
 
 | Description                                         | Method                             | URI                                   | Type        | Example Payload                                                   |
 |-----------------------------------------------------|------------------------------------|---------------------------------------|-------------|-------------------------------------------------------------------|
