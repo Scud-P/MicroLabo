@@ -27,16 +27,8 @@ public class RouteValidator {
             "/auth/token",
             "/auth/validate",
             "/auth/isAuthenticated",
-            "/api-docs",
-            "/v2/api-docs",
-            "/v3/api-docs",
-            "/swagger-ui/",
-            "/swagger-ui.html",
-            "/swagger-resources",
-            "/swagger-resources/configuration/ui",
-            "/swagger-resources/configuration/security",
             "/webjars/**"
-            );
+    );
 
     /**
      * A predicate that checks if a given HTTP request is secured.
@@ -48,5 +40,4 @@ public class RouteValidator {
             request -> openApiEndpoints
                     .stream()
                     .noneMatch(uri -> request.getURI().getPath().contains(uri));
-
 }

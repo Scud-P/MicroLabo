@@ -2,12 +2,6 @@ package com.medilabo.microfront.controller;
 
 import com.medilabo.microfront.exception.WrongCredentialsException;
 import com.medilabo.microfront.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,25 +39,6 @@ public class UserController {
      * @param model Model to add attributes to be displayed on the login page.
      * @return The name of the view to be rendered, which is the login page.
      */
-    @Operation(summary = "Displays the login page",
-            description = "Displays the HTML page where the registered users can log in.",
-            parameters = {
-                    @Parameter(
-                            name = "error",
-                            description = "An error added to params in case of redirect after trying to log in with bad credentials",
-                            required = false,
-                            schema = @Schema(type = "string"))},
-            responses = {
-                    @ApiResponse(
-                            description = "HTML page displaying the login form",
-                            content = @Content(
-                                    mediaType = "text/html"
-                            )),
-                    @ApiResponse(
-                            description = "HTML page displaying the login form with a Wrong credentials message added",
-                            content = @Content(
-                                    mediaType = "text/html"))
-            })
     @GetMapping("/api/login")
     public String showLoginPage(@RequestParam(value = "error", required = false) String error, Model model) {
         if (error != null) {
@@ -79,45 +54,6 @@ public class UserController {
      * @param password The password of the user attempting to log in.
      * @return A response entity containing headers for redirection, including a token cookie if login is successful.
      */
-    @Operation(summary = "Logs the user in",
-            description = "Logs the user in with the provided username and password. On success, redirects to the home page. On failure, redirects back to the login page with an error message.",
-            parameters = {
-                    @Parameter(
-                            name = "username",
-                            description = "The username of the user attempting to log in.",
-                            required = true,
-                            schema = @Schema(type = "string")),
-                    @Parameter(
-                            name = "password",
-                            description = "The password of the user attempting to log in.",
-                            required = true,
-                            schema = @Schema(type = "string"))},
-            responses = {
-                    @ApiResponse(
-                            responseCode = "302",
-                            description = "Login successful. Redirects to the home page.",
-                            content = @Content(mediaType = "text/html"),
-                            headers = {
-                                    @Header(
-                                            name = "Set-Cookie",
-                                            description = "Contains the 'token' cookie used for subsequent authentication.",
-                                            schema = @Schema(type = "string")),
-                                    @Header(
-                                            name = "Location",
-                                            description = "URL of the redirected home page.",
-                                            schema = @Schema(type = "string"))
-                            }),
-                    @ApiResponse(
-                            responseCode = "302",
-                            description = "Login failed. Redirects back to the login page with an error message.",
-                            content = @Content(mediaType = "text/html"),
-                            headers = {
-                                    @Header(
-                                            name = "Location",
-                                            description = "URL of the login page with an appended error message.",
-                                            schema = @Schema(type = "string"))
-                            })
-            })
     @PostMapping("/api/login")
     public ResponseEntity<String> validateLogin(@RequestParam("username") String username,
                                                 @RequestParam("password") String password) {
@@ -151,29 +87,6 @@ public class UserController {
      * @param response The HTTP servlet response to modify the cookies.
      * @return A response entity indicating the redirection to the logout success page.
      */
-    @Operation(
-            summary = "Logs the user out",
-            description = "Invalidates the JWT token stored in the cookie and redirects the user to the login page with a success message.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "302",
-                            description = "Logout successful. Redirects to the login page with a success message.",
-                            content = @Content(mediaType = "text/html"),
-                            headers = {
-                                    @Header(
-                                            name = "Set-Cookie",
-                                            description = "Removes the 'token' cookie by setting its expiration time to 0.",
-                                            schema = @Schema(type = "string")
-                                    ),
-                                    @Header(
-                                            name = "Location",
-                                            description = "URL of the login page with the success message appended.",
-                                            schema = @Schema(type = "string")
-                                    )
-                            }
-                    )
-            }
-    )
     @PostMapping("/api/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         Cookie invalidatedCookie = new Cookie("token", null);

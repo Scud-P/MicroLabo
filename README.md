@@ -210,13 +210,11 @@ La javadoc peut être générée en deux étapes.
 * On lance la commande javadoc ```mvn javadoc:aggregate```
 * On peut la consulter dans le dossier ```root/target/site/apidocs```
 
-### Swagger
+### API testing
 
-Nous utilisons Swagger pour permettre aux utilisateurs de tester notre API.
-Attention, elle est disponible par le microservice Microfront.
+Afin d'être en mesure de tester tous les endpoints, il est nécessaire de passer par l'authentification.
 
 * On lance les conteneurs grâce à la commande ```docker-compose up --build```
-* On ouvre un browser et on entre dans la barre d'adresse `http://ip_de_votre_machine:port_du_conteneur_microfront/swagger-ui/index.html`
 
 Pour tester les endpoints protégés, une simple requête POST à `http://ip_de_votre_machine:port_du_conteneur_gateway/auth/token` avec un body :
 
@@ -229,10 +227,8 @@ Pour tester les endpoints protégés, une simple requête POST à `http://ip_de_
 
 Et vous récupèrerez un token en réponse.
 
-Ensuite, il faut s'authentifier. Sur Swagger UI, allez faire un POST sur /api/login avec notre fameux Bob et son password.
 
-![Requête Login](https://i.imgur.com/WYZHCqW.png)
 
-Vous pourrez ensuite tester tous les endpoints sécurisés avec votre token !
+Ensuite, il faut s'authentifier. 
 
-![Requête Patients](https://i.imgur.com/FW6pJTB.png)
+

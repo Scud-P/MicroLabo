@@ -31,7 +31,6 @@
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <spring-cloud-bootstrap.version>3.0.0</spring-cloud-bootstrap.version>
         <bootstrap.version>5.3.0</bootstrap.version>
-        <springdoc.version>2.6.0</springdoc.version>
         <reactor.version>3.6.8</reactor.version>
         <okhttp.version>4.12.0</okhttp.version>
         <jacoco.version>0.8.9</jacoco.version>
@@ -65,11 +64,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
