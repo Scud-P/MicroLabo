@@ -171,10 +171,10 @@ password varchar(200)
 ```
 
 
-* Nos tables ne contiennent que des valeurs atomiques, elles sont donc **1NF**.
+* Chaque cellule de nos tables ne contient qu'une seule valeur, elles sont donc **1NF**.
 * Tous leurs attributs dépendent de la clé primaire, soit pour les deux : `id int(11) AI PK`. Elles sont donc **2NF**.
 * Il n'y a pas de dépendance transitive entre les colonnes, elles sont donc **3NF**.
-* Attention cependant lors de l'ajout de fonctionnalités. Si, par exemple, on voulait assigner des patients à un utilisateur, on pourrait créer une table de jointure afin de conserver notre conformité 3NF.
+* Attention cependant lors de l'ajout de fonctionnalités. Si, par exemple, on voulait assigner des patients à un médecin, on ne pourrait pas juste rajouter une colonne "Médecin" à notre table patients. On pourrait néanmoins créer une table de jointure afin de conserver notre conformité 3NF.
 
 ```
 Table: medical_relationship
