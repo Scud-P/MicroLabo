@@ -210,13 +210,13 @@ La javadoc peut être générée en deux étapes.
 * On lance la commande javadoc ```mvn javadoc:aggregate```
 * On peut la consulter dans le dossier ```root/target/site/apidocs```
 
-### API testing
+## API testing
 
 Afin d'être en mesure de tester tous les endpoints, il est nécessaire de passer par l'authentification.
 
 * On lance les conteneurs grâce à la commande ```docker-compose up --build```
 
-Pour tester les endpoints protégés, une simple requête POST à `http://ip_de_votre_machine:port_du_conteneur_gateway/auth/token` avec un body :
+Pour tester les endpoints protégés, une simple requête POST, il faut absolument passer par la requête ```POST``` à ```/IP_DE_LA_MACHINE:PORT_DU_GATEWAY/api/login``` avec l'un des utilisateurs enregistrés, comme Bob!
 
 ```
 {
@@ -225,10 +225,31 @@ Pour tester les endpoints protégés, une simple requête POST à `http://ip_de_
 }
 ```
 
-Et vous récupèrerez un token en réponse.
+# API Endpoints
+# API Endpoints
 
+| Description                                         | Method                             | URI                                   | Type        | Example Payload                                                   |
+|-----------------------------------------------------|------------------------------------|---------------------------------------|-------------|-------------------------------------------------------------------|
+| Enregistre un nouvel utilisateur                    | ![POST](https://img.shields.io/badge/POST-yellow) | /auth/register                        | JSON        | `{ "name": "Thalia", "email": "thalia@google.com", "password": "monpassword" }` |
+| Génère un JWT pour l'utilisateur                    | ![POST](https://img.shields.io/badge/POST-yellow) | /auth/token                           | JSON        | `{ "username": "Thalia", "password": "monpassword" }`              |
+| Valide le token à chaque passage par le gateway     | ![GET](https://img.shields.io/badge/GET-green)   | /auth/validate                        | N/A         | N/A                                                               |
+| Affiche la page de Login                            | ![GET](https://img.shields.io/badge/GET-green)   | /api/login                            | N/A         | N/A                                                               |
+| Soumet les identifiants de connexion                | ![POST](https://img.shields.io/badge/POST-yellow) | /api/login                            | Query Params| `?username=Thalia&password=monpassword`                           |
+| Affiche la page de logout                           | ![GET](https://img.shields.io/badge/GET-green)   | /api/logout                           | N/A         | N/A                                                               |
+| Révoque l'authentification et redirige vers logout-success | ![POST](https://img.shields.io/badge/POST-yellow) | /api/logout                           | N/A         | N/A                                                               |
+| Affiche la page de confirmation de logout réussi    | ![GET](https://img.shields.io/badge/GET-green)   | /api/logout-success                   | N/A         | N/A                                                               |
+| Affiche les détails du patient                      | ![GET](https://img.shields.io/badge/GET-green)   | /api/patients/{id}                    | Path variable| N/A                                                               |
+| Valide la création d'un nouveau patient             | ![POST](https://img.shields.io/badge/POST-yellow) | /api/patients/validate                | form-data   | `firstName: Obiwan, lastName: Kenobi, gender: M, birthdate: 1900-01-01, address: 1, Jedi Temple Road, phoneNumber: 123456789` |
+| Modifie les informations du patient                 | ![PUT](https://img.shields.io/badge/PUT-blue)   | /api/patients/{id}                    | form-data   | `firstName: Obiwan, lastName: Kenobi, gender: M, birthdate: 1900-01-01, address: 2, Senate Drive, phoneNumber: 123456789` |
+| Supprime le patient                                 | ![DELETE](https://img.shields.io/badge/DELETE-red) | /api/patients/{id}                    | Path variable| N/A                                                               |
+| Obtient le formulaire de modification des infos patient | ![GET](https://img.shields.io/badge/GET-green)   | /api/patients/update/{id}             | Path variable| N/A                                                               |
+| Obtient le formulaire de création d'un nouveau patient | ![GET](https://img.shields.io/badge/GET-green)   | /api/patients/add                     | N/A         | N/A                                                               |
+| Obtient la liste de notes d'un patient par son id   | ![GET](https://img.shields.io/badge/GET-green)   | /api/notes/patient/{patientId}        | Path variable| N/A                                                               |
+| Obtient le formulaire de modification d'une note    | ![GET](https://img.shields.io/badge/GET-green)   | /api/notes/update/{id}                | Path variable| N/A                                                               |
+| Valide la création d'une nouvelle note              | ![POST](https://img.shields.io/badge/POST-yellow) | /api/notes/validate                   | form-data   | `patientId: 16, patientLastName: Kenobi, content: Le patient affirme être tenté par le côté obscur de la force` |
+| Valide la modification d'une note                   | ![PUT](https://img.shields.io/badge/PUT-blue)   | /api/notes/{id}                       | form-data   | `patientId: 16, patientLastName: Kenobi, content: Le patient a dit avoir le high ground` |
+| Affiche le formulaire de création d'une note pour un patient donné | ![GET](https://img.shields.io/badge/GET-green)   | /api/notes/add/{patientId}            | Path variable| N/A                                                               |
+| Supprime une note par son id                        | ![DELETE](https://img.shields.io/badge/DELETE-red) | /api/notes/{id}                       | Path variable| N/A                                                               |
 
-
-Ensuite, il faut s'authentifier. 
 
 
